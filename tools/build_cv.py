@@ -124,10 +124,10 @@ h1{font:700 27pt/1.02 "Inter",system-ui,Arial,sans-serif;margin:0;color:#1a1670;
 .role{font:700 15pt/1.1 "Inter",system-ui,Arial,sans-serif;color:#1a1670;margin-top:3mm}
 h2{font:600 10.5pt/1.2 "Inter",system-ui,Arial,sans-serif;color:#1a1670;margin:0 0 1.6mm}
 .top{display:grid;grid-template-columns:34mm 1fr 72mm;gap:8mm;align-items:center;position:relative}
-.photo{width:34mm;height:34mm;border-radius:5mm;object-fit:cover;box-shadow:0 2mm 6mm rgba(60,40,160,.18)}
+.photo{width:34mm;height:34mm;border-radius:5mm;object-fit:cover}
 .links{display:grid;gap:2.6mm}
 .link{display:grid;grid-template-columns:11mm 1fr;gap:4mm;align-items:center}
-.link img{width:10mm;height:10mm;border-radius:2mm;box-shadow:0 1mm 2.5mm rgba(0,0,0,.18)}
+.link img{width:10mm;height:10mm;border-radius:2mm}
 .link b{display:block;font-size:10pt;font-weight:600}
 .link a{text-decoration:underline;font-size:8.8pt}
 .mid{display:grid;grid-template-columns:1fr 72mm;gap:8mm;margin-top:4.5mm;position:relative}
@@ -141,7 +141,7 @@ h2{font:600 10.5pt/1.2 "Inter",system-ui,Arial,sans-serif;color:#1a1670;margin:0
 .side .hs li span{display:block}
 .langs li{display:grid;grid-template-columns:24mm 1fr}
 .job{display:grid;grid-template-columns:10mm 1fr;gap:3mm;margin-bottom:2.6mm}
-.job .ic{width:9.5mm;height:9.5mm;border-radius:2mm;object-fit:cover;box-shadow:0 1mm 2.5mm rgba(0,0,0,.2);display:grid;place-items:center;font:800 15pt "Inter",Arial,sans-serif}
+.job .ic{width:9.5mm;height:9.5mm;border-radius:2mm;object-fit:cover;border:.25mm solid #e3e1ee;display:grid;place-items:center;font:800 15pt "Inter",Arial,sans-serif}
 .job .ic.F{background:#141070;color:#fff}
 .job .ic.P{background:#f3f2f7;color:#1a1670;font-size:12pt}
 .job .head{font-size:8.9pt;margin-bottom:.8mm}
