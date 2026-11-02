@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tomas Carballes 3D Generalist</title>
+<meta name="description" content="Tomas Carballes, 3D generalist based in Buenos Aires. Lighting, lookdev and environments in Blender.">
+<meta property="og:title" content="Tomas Carballes · 3D Generalist">
+<meta property="og:description" content="Lighting, lookdev and environments. Portfolio, CV and contact.">
+<!-- When hosted, add: <meta property="og:image" content="https://YOUR-SITE/img/banner.jpg"> so the link shows a preview in DMs -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Cormorant+SC:wght@500;600&family=Spectral:wght@300;400&display=swap">
+<style>
+/* Layout: night graveyard. Atmosphere lives in the banner only; filigree dividers between sections. Work first, renders unframed and untouched by overlays. Single dark look by choice. */
+:root{
+  --bg:#0a0d0b; --surface:#111612; --line:#26302a; --fg:#e3e1d8; --muted:#959c92; --moss:#6f8a68; --violet:#9a80c4; --violet-deep:#5d4785;
+  --display:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --gothic:"Cinzel","Trajan Pro",Georgia,serif;
+  --label:"Cormorant SC",Georgia,serif;
+  --body:"Spectral",Georgia,serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+.top::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;opacity:.07;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+body{background:var(--bg);color:var(--fg);font:400 17px/1.7 var(--body)}
+.wrap{max-width:1100px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:inherit}
+a:focus-visible{outline:1px solid var(--violet);outline-offset:4px}
+
+.top{position:relative;overflow:hidden;border-bottom:1px solid var(--line);
+  background:
+    radial-gradient(ellipse 80% 55% at 30% 110%, rgba(111,138,104,.28), transparent 70%),radial-gradient(ellipse 70% 50% at 80% 105%, rgba(140,155,140,.16), transparent 70%),
+    radial-gradient(ellipse 50% 60% at 50% 0%, rgba(93,71,133,.25), transparent 70%),
+    var(--bg)}
+.top::after{content:"";position:absolute;inset:auto 0 0;height:55%;pointer-events:none;
+  background:linear-gradient(transparent, rgba(150,165,150,.09) 55%, rgba(150,165,150,.16));filter:blur(8px)}
+nav{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:22px;flex-wrap:wrap}
+nav .name{font:600 21px var(--label);letter-spacing:.06em;text-decoration:none}
+nav ul{display:flex;gap:24px;list-style:none;margin:0;padding:0;flex-wrap:wrap;font:500 16px var(--label);letter-spacing:.08em}
+nav ul a{text-decoration:none;color:var(--muted)}
+nav ul a:hover{color:var(--fg)}
+.hero{position:relative;z-index:1;padding-block:56px 72px;display:grid;justify-items:center;text-align:center;gap:10px}
+.hero .place{font:500 15px var(--label);letter-spacing:.22em;color:var(--moss)}
+h1{font:700 clamp(44px,7vw,80px)/.95 var(--display);margin:0;text-wrap:balance}
+.hero .sub{font:italic 500 clamp(19px,2.4vw,23px)/1.4 var(--display);color:var(--muted);margin:6px 0 0;max-width:34ch}
+.cta{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:24px}
+.btn{display:inline-block;padding:10px 24px;border:1px solid var(--line);text-decoration:none;font:600 16px var(--label);letter-spacing:.1em;transition:border-color .3s,background .3s}
+.btn:hover{border-color:var(--fg)}
+.btn.primary{background:var(--violet-deep);border-color:var(--violet-deep)}
+.btn.primary:hover{background:var(--violet);border-color:var(--violet);color:#120e18}
+
+.fence{display:block;width:min(320px,80%);height:28px;margin:0 auto 14px;color:var(--muted)}
+section{padding-block:72px}
+.head{text-align:center;margin-bottom:40px}
+h2{font:700 clamp(34px,5vw,50px)/1 var(--display);margin:0;text-wrap:balance}
+.lead{color:var(--muted);margin:10px auto 0;max-width:56ch}
+
+#work{padding-top:56px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:36px 28px}
+.card{display:grid;gap:14px;text-decoration:none}
+.thumb{aspect-ratio:4/3;max-width:100%;overflow:hidden;position:relative;background:var(--surface);border:1px solid var(--line)}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .7s ease}
+.card:hover .thumb img{transform:scale(1.03)}
+.thumb .ph{position:absolute;inset:0;display:grid;place-items:center;font:italic 500 22px var(--display);color:var(--muted);text-align:center;padding:16px}
+.card .tags{font:500 14px var(--label);letter-spacing:.12em;color:var(--violet)}
+.card h3{font:700 26px/1.1 var(--display);margin:2px 0 0}
+.card p{margin:4px 0 0;color:var(--muted);font-size:16px}
+.featured{grid-column:1/-1}
+.featured .thumb{aspect-ratio:21/9}
+
+.cv{display:grid;grid-template-columns:1fr 2fr;gap:48px}
+.cv > *{min-width:0}
+.cv h3{font:600 17px var(--label);letter-spacing:.14em;color:var(--moss);margin:0 0 12px}
+.cv ul{list-style:none;margin:0 0 30px;padding:0;display:grid;gap:4px;font-size:16px}
+.job{display:grid;gap:2px;padding-block:16px;border-bottom:1px solid var(--line)}
+.job:first-of-type{padding-top:0}
+.job .r{font:700 21px/1.2 var(--display)}
+.job .m{font:500 15px var(--label);letter-spacing:.08em;color:var(--muted);font-variant-numeric:tabular-nums}
+.job p{margin:4px 0 0;color:var(--muted);font-size:16px}
+.dl{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-bottom:44px}
+
+.other{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+.other a{display:grid;gap:4px;padding:20px;border:1px solid var(--line);text-decoration:none;transition:border-color .3s}
+.other a:hover{border-color:var(--moss)}
+.other strong{font:700 22px var(--display)}
+.other span{color:var(--muted);font-size:15px}
+
+footer{padding-block:72px 56px;border-top:1px solid var(--line);text-align:center;display:grid;gap:14px}
+.contact{display:flex;gap:28px;flex-wrap:wrap;justify-content:center;align-items:center;font:500 17px var(--label);letter-spacing:.08em}
+.mail{user-select:all;font:400 16px var(--body);letter-spacing:0;color:var(--fg)}
+.small{color:var(--muted);font-size:13px}
+@media (max-width:720px){.cv{grid-template-columns:1fr;gap:8px}.featured .thumb{aspect-ratio:4/3}.hero{padding-block:40px 56px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* hero scene */
+.top{min-height:clamp(320px,52vh,440px)}
+.sky{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,#0c100e 0%,#111714 60%,var(--bg) 100%)}
+.moon{position:absolute;right:10%;top:36px;width:clamp(70px,10vw,120px);aspect-ratio:1;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle at 38% 36%,#f3efe2,#d9d3c0 55%,#b9b3a0);
+  box-shadow:0 0 60px 20px rgba(220,214,195,.18),0 0 180px 60px rgba(154,128,196,.16)}
+.moon::after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 62% 60%,rgba(0,0,0,.12) 0 8%,transparent 9%),radial-gradient(circle at 30% 68%,rgba(0,0,0,.08) 0 6%,transparent 7%),radial-gradient(circle at 55% 28%,rgba(0,0,0,.07) 0 5%,transparent 6%)}
+.ridge{position:absolute;left:0;right:0;bottom:0;width:100%;height:auto;pointer-events:none;display:block}
+.ridge.far{fill:#16201b;opacity:.9;bottom:38px}
+.ridge.near{fill:#070908}
+#fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.top .wrap{position:relative;z-index:2}
+.hero h1{font-family:var(--gothic);font-weight:700;letter-spacing:.04em;text-shadow:0 2px 30px rgba(0,0,0,.8),0 0 2px rgba(0,0,0,.9)}
+.hero .sub{color:#c9c6bb;text-shadow:0 1px 12px rgba(0,0,0,.9)}
+h2{font-family:var(--gothic)!important;letter-spacing:.04em}
+.card .thumb{transition:border-color .4s,box-shadow .4s}
+.card:hover .thumb{border-color:var(--violet-deep);box-shadow:0 0 0 1px var(--violet-deep),0 12px 40px -10px rgba(154,128,196,.35)}
+
+.bar{position:relative;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.bar nav{padding-block:18px}
+.banner{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55;pointer-events:none}
+.banner ~ .moon{display:none}
+.hero .role{margin:6px 0 0;font:600 clamp(18px,2.4vw,24px) var(--gothic);letter-spacing:.24em;text-transform:uppercase;color:var(--violet);text-shadow:0 1px 12px rgba(0,0,0,.9)}
+nav .name{font-family:var(--gothic);letter-spacing:.12em}
+
+/* ===== intro + castle wall (parallax) ===== */
+.top,.sky{display:none}
+.bar{position:fixed;inset:0 0 auto;z-index:30;background:rgba(10,13,11,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);
+  padding-top:env(safe-area-inset-top,0px);transform:translateY(-110%);transition:transform .4s ease}
+.bar.show{transform:none}
+.intro{position:relative;height:140svh;min-height:760px}
+.intro-stage{position:sticky;top:0;height:100svh;min-height:520px;overflow:hidden;background:#030404;display:grid;place-items:center}
+.lights{position:absolute;inset:-10%;pointer-events:none;
+  background:
+    radial-gradient(ellipse 45% 40% at 18% 70%, rgba(80,140,95,.22), transparent 70%),
+    radial-gradient(ellipse 40% 45% at 82% 30%, rgba(120,90,190,.22), transparent 70%),
+    radial-gradient(ellipse 50% 35% at 55% 95%, rgba(60,90,160,.18), transparent 70%);
+  animation:breathe 14s ease-in-out infinite alternate}
+@keyframes breathe{to{transform:scale(1.06) translate(1.5%,-1%);opacity:.85}}
+.intro-stage .banner{opacity:.4}
+.intro-content{position:relative;z-index:3;display:grid;justify-items:center;text-align:center;gap:10px;padding-inline:16px;will-change:transform,opacity}
+.intro-content h1{font-family:var(--gothic);font-weight:700;letter-spacing:.04em;font-size:clamp(44px,8vw,96px);line-height:.95;margin:0;text-shadow:0 2px 30px rgba(0,0,0,.9)}
+.intro-content .place{font:500 15px var(--label);letter-spacing:.22em;color:var(--moss)}
+.intro-content .role{margin:6px 0 0;font:600 clamp(18px,2.4vw,24px) var(--gothic);letter-spacing:.24em;text-transform:uppercase;color:var(--violet)}
+.intro-content .sub{font:italic 500 clamp(19px,2.4vw,23px)/1.4 var(--display);color:#c9c6bb;margin:6px 0 0;max-width:34ch}
+.intro-fade{position:absolute;inset:auto 0 0;height:38%;z-index:2;pointer-events:none;background:linear-gradient(transparent,rgba(0,0,0,.85))}
+.down{position:absolute;left:50%;bottom:calc(28px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:4;display:grid;justify-items:center;gap:4px;
+  text-decoration:none;font:600 15px var(--label);letter-spacing:.2em;color:var(--fg);opacity:.85;animation:float 2.6s ease-in-out infinite}
+.down:hover{opacity:1;color:var(--violet)}
+@keyframes float{50%{transform:translate(-50%,8px)}}
+#fx{z-index:1}
+
+.castle{position:relative;z-index:10;margin-top:-40svh}
+.wall{position:relative;height:clamp(140px,18vw,220px);pointer-events:none;
+  /* placeholder stone wall: crenellated silhouette + brick pattern */
+  background:
+    repeating-linear-gradient(0deg, transparent 0 34px, rgba(0,0,0,.55) 34px 36px),
+    repeating-linear-gradient(90deg, transparent 0 70px, rgba(0,0,0,.45) 70px 72px),
+    linear-gradient(180deg,#2a2f2c,#1a1e1c 60%,var(--bg));
+  -webkit-mask:linear-gradient(#000,#000) bottom/100% calc(100% - 36px) no-repeat, repeating-linear-gradient(90deg,#000 0 60px,transparent 60px 100px) top/100% 36px no-repeat;
+          mask:linear-gradient(#000,#000) bottom/100% calc(100% - 36px) no-repeat, repeating-linear-gradient(90deg,#000 0 60px,transparent 60px 100px) top/100% 36px no-repeat}
+.wall-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
+.wall:has(.wall-img){background:none;-webkit-mask:none;mask:none}
+.sconce{position:absolute;bottom:22%;width:44px;height:70px}
+.sconce.left{left:8%}.sconce.right{right:8%}
+.sconce::before{content:"";position:absolute;left:50%;bottom:0;width:10px;height:46px;transform:translateX(-50%);background:linear-gradient(90deg,#1b1b1b,#4a4642,#1b1b1b);border-radius:2px}
+.sconce::after{content:"";position:absolute;left:50%;bottom:40px;width:30px;height:10px;transform:translateX(-50%);background:#3a3632;border-radius:2px}
+.sconce img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.sconce:has(img)::before,.sconce:has(img)::after{display:none}
+.flame{position:absolute;left:50%;bottom:48px;width:14px;height:22px;transform:translateX(-50%);border-radius:50% 50% 40% 40%;
+  background:radial-gradient(circle at 50% 70%,#fff3c4,#e8a24a 45%,rgba(200,80,30,0) 75%);
+  box-shadow:0 0 30px 14px rgba(232,162,74,.28),0 0 90px 40px rgba(232,162,74,.12);animation:flick 1.8s infinite alternate}
+@keyframes flick{20%{transform:translateX(-50%) scale(1,.92)}45%{transform:translateX(-52%) scale(.95,1.06)}70%{transform:translateX(-48%) scale(1.04,.97)}100%{transform:translateX(-50%) scale(.98,1.03)}}
+.castle-body{background:var(--bg);position:relative}
+#work{padding-top:24px}
+@media (max-width:720px){.sconce{display:none}}
+@media (prefers-reduced-motion:reduce){.lights,.down,.flame{animation:none}}
+
+/* text support: soft black blur behind text that sits over animated or 3D backgrounds */
+.intro-content{isolation:isolate;padding:48px clamp(24px,6vw,72px)}
+.intro-content::before{content:"";position:absolute;inset:-10% -14%;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse closest-side,rgba(0,0,0,.82) 0%,rgba(0,0,0,.6) 45%,rgba(0,0,0,0) 100%);filter:blur(10px)}
+.intro-content .sub{color:#e3e1d8}
+.down::before{content:"";position:absolute;inset:-18px -34px;z-index:-1;border-radius:50%;background:radial-gradient(ellipse closest-side,rgba(0,0,0,.75),rgba(0,0,0,0));filter:blur(6px)}
+.down{isolation:isolate}
+
+/* ===== v11: wall background, panels, about, stars, mobile ===== */
+.castle-body{
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 0%, rgba(0,0,0,.6), transparent 70%),
+    repeating-linear-gradient(0deg, transparent 0 46px, rgba(0,0,0,.5) 46px 48px),
+    repeating-linear-gradient(90deg, transparent 0 94px, rgba(0,0,0,.38) 94px 96px),
+    linear-gradient(180deg,#1b1f1d,#141816 50%,#101311);
+  /* PLACEHOLDER: replace with your 3D stone wall texture: background: url(img/wall-tile.jpg) center/600px repeat */
+}
+.castle-body > .wrap{padding-block:16px}
+section{padding-block:28px}
+.panel{background:rgba(7,9,8,.88);border:1px solid var(--line);padding:clamp(22px,4vw,48px);backdrop-filter:blur(3px);box-shadow:0 20px 60px -20px rgba(0,0,0,.8)}
+footer{border-top:0;padding-block:28px 56px}
+.about{display:grid;grid-template-columns:auto 1fr;gap:clamp(20px,4vw,40px);align-items:start;max-width:820px;margin:0 auto}
+.about-text{min-width:0}
+.about-text p{margin:0 0 14px}
+.photo{width:clamp(110px,16vw,160px);height:auto;aspect-ratio:1;object-fit:cover;border-radius:50%;border:1px solid var(--line);filter:grayscale(.15)}
+.facts{font:500 15px var(--label);letter-spacing:.12em;color:var(--moss)}
+.grass{position:absolute;left:0;right:0;bottom:-2px;height:34px;
+  background:repeating-linear-gradient(100deg,transparent 0 4px,#1e2c1f 4px 6px,transparent 6px 11px),repeating-linear-gradient(80deg,transparent 0 6px,#16231a 6px 8px,transparent 8px 14px);
+  -webkit-mask:linear-gradient(transparent,#000 40%);mask:linear-gradient(transparent,#000 40%)}
+.grass img{position:absolute;inset:auto 0 0;width:100%;height:auto}
+.grass:has(img){background:none;-webkit-mask:none;mask:none;height:auto}
+.skull{position:absolute;bottom:4px;width:22px;height:22px;opacity:.85}
+.skull.s1{left:22%;transform:rotate(-14deg)}.skull.s2{right:30%;width:16px;height:16px;transform:rotate(9deg)}
+#stars{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.intro-stage .moon{position:absolute;right:12%;top:12%;width:clamp(50px,7vw,90px);aspect-ratio:1;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle at 40% 38%,#ece7d8,#c9c3b0 60%,#a9a392);opacity:.75;
+  box-shadow:0 0 50px 14px rgba(210,205,190,.12),0 0 140px 50px rgba(120,100,190,.12)}
+.intro-stage .banner ~ .moon{display:block}
+.grid{grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr))}
+.other{grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr))}
+@media (max-width:720px){
+  .intro{height:125svh}
+  .castle{margin-top:-25svh}
+  .intro-content{padding:32px 20px}
+  .intro-content::before{inset:-6% -4%}
+  .bar nav{padding-block:12px;gap:8px}
+  .bar nav ul{gap:14px;font-size:14px}
+  .wall{height:110px}
+  .about{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .panel{padding:22px 18px}
+  section{padding-block:16px}
+}
+
+/* ===== v12: feathered panels, footer ground, gilded frame ===== */
+.panel{background:rgba(4,5,5,.86);border:0;backdrop-filter:none;
+  box-shadow:0 0 50px 36px rgba(4,5,5,.86)}
+.castle-body > .wrap{padding-block:60px}
+section{padding-block:56px}
+.ground{position:relative;height:70px;margin-top:20px}
+.ground .grass{height:70px;bottom:0;
+  background:
+   repeating-linear-gradient(100deg,transparent 0 4px,#26372a 4px 6px,transparent 6px 11px),
+   repeating-linear-gradient(78deg,transparent 0 6px,#1b2b1f 6px 8px,transparent 8px 14px),
+   linear-gradient(transparent 30%,#0e1510);
+  -webkit-mask:linear-gradient(transparent,#000 45%);mask:linear-gradient(transparent,#000 45%)}
+.ground .skull{bottom:8px;width:26px;height:26px}
+.ground .skull.s2{width:18px;height:18px}
+.frame{position:relative;padding:12px;border-radius:50%;width:clamp(140px,18vw,190px);aspect-ratio:4/5;
+  background:
+    radial-gradient(ellipse at 30% 20%,rgba(255,240,190,.55),transparent 45%),
+    conic-gradient(from 210deg,#7a5a1e,#d9b45a,#f6e3a1,#b8892f,#6b4c16,#c9a24a,#f2dc96,#8e6a24,#7a5a1e);
+  box-shadow:inset 0 0 0 2px rgba(60,40,10,.7),inset 0 0 10px 2px rgba(40,25,5,.8),0 10px 26px rgba(0,0,0,.7);transform:rotate(-2deg)}
+.frame::before{content:"";position:absolute;inset:5px;border-radius:50%;border:2px dotted rgba(90,62,18,.6);pointer-events:none}
+.frame .photo{width:100%;height:100%;aspect-ratio:auto;border-radius:50%;border:0;object-fit:cover;box-shadow:inset 0 0 0 1px #000;filter:sepia(.18) contrast(1.05)}
+@media (max-width:720px){.panel{box-shadow:0 0 30px 18px rgba(4,5,5,.86)}.castle-body > .wrap{padding-block:36px}section{padding-block:36px}}
+
+/* ===== v14: ornate gilded frame ===== */
+.frame{position:relative;width:clamp(170px,22vw,230px);aspect-ratio:220/270;padding:0;border-radius:0;background:none;box-shadow:none;transform:rotate(-2.5deg);margin-top:34px}
+.frame::before{display:none}
+.frame .photo{position:absolute;left:11%;top:12%;width:78%;height:80%;border-radius:50%;object-fit:cover;object-position:50% 30%;
+  filter:sepia(.22) contrast(1.06) saturate(.9);box-shadow:inset 0 0 20px rgba(0,0,0,.6)}
+.frame .gild{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.frame .hang{position:absolute;left:50%;top:-34px;width:60%;transform:translateX(-50%);overflow:visible}
+.frame::after{content:"";position:absolute;left:11%;top:12%;width:78%;height:80%;border-radius:50%;pointer-events:none;
+  background:radial-gradient(ellipse at 35% 25%,rgba(255,255,255,.12),transparent 40%);box-shadow:inset 0 0 18px 4px rgba(0,0,0,.55)}
+</style>
+<script>
+function imgFallback(img){var l=img.getAttribute("data-local");if(l){img.removeAttribute("data-local");img.src=l;}else{img.remove();}}
+</script>
+
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="fence" viewBox="0 0 320 28">
+    <g fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round">
+      <path d="M10 14 H120"/><path d="M200 14 H310"/>
+      <path d="M120 14 c10 0 14 -10 24 -10 c8 0 10 7 4 9 c-4 1 -6 -3 -3 -4"/>
+      <path d="M200 14 c-10 0 -14 -10 -24 -10 c-8 0 -10 7 -4 9 c4 1 6 -3 3 -4"/>
+      <path d="M120 14 c10 0 14 10 24 10 c8 0 10 -7 4 -9"/>
+      <path d="M200 14 c-10 0 -14 10 -24 10 c-8 0 -10 -7 -4 -9"/>
+    </g>
+    <path d="M160 6 L165 14 L160 22 L155 14 Z" fill="#9a80c4"/>
+  </symbol>
+  <symbol id="skull" viewBox="0 0 40 40"><path d="M20 4C11 4 5 10 5 18c0 5 2 8 5 10v5c0 1 1 2 2 2h3v-3h2v3h6v-3h2v3h3c1 0 2-1 2-2v-5c3-2 5-5 5-10 0-8-6-14-15-14z" fill="#8f8a7c"/><circle cx="14" cy="19" r="4" fill="#0a0b0a"/><circle cx="26" cy="19" r="4" fill="#0a0b0a"/><path d="M20 23l-2 4h4z" fill="#0a0b0a"/></symbol>
+</svg>
+
+<div class="bar" id="bar"><div class="wrap">
+    <nav>
+      <a class="name" href="#top" aria-label="Tomas Carballes, home">TC</a>
+      <ul>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#cv">CV</a></li>
+        <li><a href="#other">Other work</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+</div></div>
+
+<div class="intro" id="top">
+  <div class="intro-stage" id="stage">
+    <div class="lights"></div>
+    <canvas id="stars" aria-hidden="true"></canvas>
+    <div class="moon" aria-hidden="true"></div>
+    <img class="banner" src="img/banner.jpg" alt="" onerror="this.remove()">
+    <canvas id="fx" aria-hidden="true"></canvas>
+    <div class="intro-content" id="introContent">
+      <h1>Tomas Carballes</h1>
+      <p class="role">3D Generalist</p>
+      <p class="sub">Modeling · Lookdev · Lighting · Rendering</p>
+      <div class="cta">
+        <a class="btn primary" href="https://www.artstation.com/tomascarballes" target="_blank" rel="noopener">ArtStation</a>
+        <a class="btn" href="#cv">CV</a>
+      </div>
+    </div>
+    <div class="intro-fade"></div>
+    <a class="down" href="#work" id="down"><span>See work</span>
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 9l7 7 7-7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</div>
+
+<div class="castle">
+  <!-- PLACEHOLDER: replace this CSS wall with your 3D render: img/wall.png (transparent PNG, wide, top edge cut like a castle wall) -->
+  <div class="wall" aria-hidden="true">
+    <img class="wall-img" src="img/wall.png" alt="" onerror="this.remove()">
+    <!-- PLACEHOLDER: replace each sconce with your 3D torch render: img/sconce.png -->
+    <div class="sconce left"><img src="img/sconce.png" alt="" onerror="this.remove()"><i class="flame"></i></div>
+    <div class="sconce right"><img src="img/sconce.png" alt="" onerror="this.remove()"><i class="flame"></i></div>
+  </div>
+  <div class="castle-body">
+<div class="wrap">
+  <section id="work">
+    <div class="panel">
+    <div class="head">
+      <svg class="fence" aria-hidden="true"><use href="#fence"/></svg>
+      <h2>Selected Work</h2>
+      <p class="lead">Personal projects and a short film. Each one opens on ArtStation with the full breakdown.</p>
+    </div>
+    <div class="grid">
+      <a class="card featured" href="https://www.artstation.com/artwork/Zl5DKN" target="_blank" rel="noopener">
+        <div class="thumb"><span class="ph">Just a Normal Fridge</span><img src="https://cdna.artstation.com/p/assets/video_clips/images/078/808/686/large/tomas-carballes-thumb.jpg?1723129745" data-local="img/fridge.jpg" alt="Just a Normal Fridge render" loading="lazy" onerror="imgFallback(this)"></div>
+        <div><span class="tags">Personal · Lighting · Set dressing</span><h3>Just a Normal Fridge</h3><p>An everyday fridge used to tell a story about loneliness and addiction. Focus on light, color and composition.</p></div>
+      </a>
+      <a class="card" href="https://www.artstation.com/artwork/Jrld3D" target="_blank" rel="noopener">
+        <div class="thumb"><span class="ph">Potion Designs</span><img src="https://cdna.artstation.com/p/assets/images/images/079/000/308/20251018131749/large/tomas-carballes-1630361230456.jpg?1760811470" data-local="img/potions.jpg" alt="Glass potion bottles render" loading="lazy" onerror="imgFallback(this)"></div>
+        <div><span class="tags">Lookdev · Materials</span><h3>Potion Designs</h3><p>Glass, liquid and label materials. Modeling, texturing and lighting.</p></div>
+      </a>
+      <a class="card" href="https://www.artstation.com/artwork/Ov8eQK" target="_blank" rel="noopener">
+        <div class="thumb"><span class="ph">Astros de Papel</span><img src="https://cdnb.artstation.com/p/assets/images/images/098/739/775/large/tomas-carballes-530323591-17958779486972866-6342946543259570624-n.webp?1777932388" data-local="img/astros.jpg" alt="Astros de Papel short film still" loading="lazy" onerror="imgFallback(this)"></div>
+        <div><span class="tags">Short film · Lighting & Render Director</span><h3>Astros de Papel</h3><p>Team production, 2023–2025. Assets, master lighting shader and render pipeline.</p></div>
+      </a>
+      <a class="card" href="https://www.artstation.com/artwork/rlN8na" target="_blank" rel="noopener">
+        <div class="thumb"><span class="ph">The Bloodseer</span><img src="https://cdnb.artstation.com/p/assets/covers/images/092/701/909/large/tomas-carballes-tomas-carballes-artstationprojectcoverfinal-custom.jpg?1760408544" data-local="img/bloodseer.jpg" alt="The Bloodseer relic" loading="lazy" onerror="imgFallback(this)"></div>
+        <div><span class="tags">Prop · Rigging · Animation</span><h3>The Bloodseer</h3><p>A fantasy relic, from concept to final edit: modeling, rigging, UVs, texturing and render.</p></div>
+      </a>
+      <a class="card" href="https://www.artstation.com/artwork/03Lr0Y" target="_blank" rel="noopener">
+        <div class="thumb"><span class="ph">Moaning Myrtle's Bathroom</span><img src="https://cdnb.artstation.com/p/assets/images/images/048/345/595/20220412175019/large/tomas-carballes-test5-grande.jpg?1649803819" data-local="img/bathroom.jpg" alt="Gothic bathroom environment" loading="lazy" onerror="imgFallback(this)"></div>
+        <div><span class="tags">Environment · Fan art</span><h3>Moaning Myrtle's Bathroom</h3><p>Full environment recreation with a camera walkthrough.</p></div>
+      </a>
+    </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="panel">
+    <div class="head">
+      <svg class="fence" aria-hidden="true"><use href="#fence"/></svg>
+      <h2>About</h2>
+    </div>
+    <div class="about">
+      <div class="frame">
+        <svg class="hang" viewBox="0 0 200 60" aria-hidden="true"><path d="M30 60 L100 8 L170 60" fill="none" stroke="#3b3226" stroke-width="2"/><circle cx="100" cy="8" r="5" fill="#2a2520" stroke="#6b5a3e" stroke-width="1.5"/></svg>
+        <img class="photo" src="img/about.jpg" alt="Tomas Carballes" width="160" height="160">
+        <svg class="gild" viewBox="0 0 220 270" aria-hidden="true">
+          <defs>
+            <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#fbeab0"/><stop offset=".22" stop-color="#c9973a"/><stop offset=".45" stop-color="#f3d687"/>
+              <stop offset=".65" stop-color="#8a621f"/><stop offset=".85" stop-color="#e2bd62"/><stop offset="1" stop-color="#6e4b14"/>
+            </linearGradient>
+            <linearGradient id="goldDark" x1="1" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#5a3c0f"/><stop offset=".5" stop-color="#b8882e"/><stop offset="1" stop-color="#4a320c"/>
+            </linearGradient>
+            <filter id="gs" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000" flood-opacity=".75"/></filter>
+          </defs>
+          <g filter="url(#gs)">
+            <!-- outer molding -->
+            <ellipse cx="110" cy="140" rx="98" ry="120" fill="none" stroke="url(#gold)" stroke-width="16"/>
+            <ellipse cx="110" cy="140" rx="106" ry="128" fill="none" stroke="url(#goldDark)" stroke-width="2"/>
+            <ellipse cx="110" cy="140" rx="90" ry="112" fill="none" stroke="url(#goldDark)" stroke-width="2.5"/>
+            <!-- bead ring -->
+            <ellipse cx="110" cy="140" rx="98" ry="120" fill="none" stroke="#f6dd92" stroke-width="5" stroke-linecap="round" stroke-dasharray="0.1 9" opacity=".9"/>
+            <!-- inner lip -->
+            <ellipse cx="110" cy="140" rx="85" ry="107" fill="none" stroke="url(#gold)" stroke-width="4"/>
+            <!-- crest: scrolls + shell -->
+            <g fill="url(#gold)" stroke="url(#goldDark)" stroke-width="1.2">
+              <path d="M110 4 C96 4 88 16 92 26 C80 20 66 22 62 32 C74 30 84 34 90 40 L130 40 C136 34 146 30 158 32 C154 22 140 20 128 26 C132 16 124 4 110 4Z"/>
+              <path d="M110 8 L104 36 M110 8 L116 36 M110 8 L98 34 M110 8 L122 34" fill="none" stroke="#6e4b14" stroke-width="1"/>
+              <circle cx="66" cy="34" r="5"/><circle cx="154" cy="34" r="5"/>
+            </g>
+            <!-- bottom ornament -->
+            <g fill="url(#gold)" stroke="url(#goldDark)" stroke-width="1.2">
+              <path d="M110 268 C100 268 94 260 96 252 L124 252 C126 260 120 268 110 268Z"/>
+              <path d="M84 254 C90 246 100 248 104 252 L116 252 C120 248 130 246 136 254 C128 256 118 258 110 258 C102 258 92 256 84 254Z"/>
+            </g>
+            <!-- side rosettes -->
+            <g fill="url(#gold)" stroke="url(#goldDark)" stroke-width="1"><circle cx="12" cy="140" r="7"/><circle cx="208" cy="140" r="7"/></g>
+          </g>
+        </svg>
+      </div>
+      <div class="about-text">
+        <p>I'm a 3D generalist from Buenos Aires with a degree in Multimedia Design from ISEC. What pulls me into 3D is building worlds: scenes where the lighting, the materials and the small details tell a story before anyone explains it.</p>
+        <p>I've worked as Lighting & Render Director on the short film <em>Astros de Papel</em>, as a freelance 3D artist, and as a web and graphic designer, which gave me a strong eye for composition and a habit of working closely with teams.</p>
+        <p class="facts">Buenos Aires, Argentina · Spanish native · English advanced</p>
+      </div>
+    </div>
+    </div>
+  </section>
+
+  <section id="cv">
+    <div class="panel">
+    <div class="head">
+      <svg class="fence" aria-hidden="true"><use href="#fence"/></svg>
+      <h2>CV</h2>
+      <p class="lead">Experience, skills and education.</p>
+    </div>
+    <!-- TODO: add cv/Tomas_Carballes_EN.pdf and cv/Tomas_Carballes_ES.pdf, then remove hidden -->
+    <div class="dl" hidden>
+      <a class="btn" href="cv/Tomas_Carballes_EN.pdf" target="_blank" rel="noopener">Download CV · English</a>
+      <a class="btn" href="cv/Tomas_Carballes_ES.pdf" target="_blank" rel="noopener">Descargar CV · Español</a>
+    </div>
+    <div class="cv">
+      <div>
+        <h3>3D Skills</h3>
+        <ul><li>High to low poly workflow</li><li>Sculpting & retopology</li><li>Hard surface modeling</li><li>UVs & optimization</li><li>PBR & procedural texturing</li><li>Set dressing</li><li>Cinematic lighting & shading</li><li>Compositing & color grading</li></ul>
+        <h3>Tools</h3>
+        <ul><li>Blender · ZBrush · Maya · 3ds Max</li><li>Substance Painter · Designer</li><li>Marmoset Toolbag</li><li>Photoshop · After Effects · Premiere</li><li>Figma · HTML · CSS</li></ul>
+        <h3>Languages</h3>
+        <ul><li>Spanish · Native</li><li>English · Advanced</li></ul>
+      </div>
+      <div>
+        <h3>Experience</h3>
+        <div class="job"><span class="r">Lighting & Render Director / 3D Artist</span><span class="m">Astros de Papel · 2023–2025</span><p>Built assets and environments in Blender, co-developed the master lighting shader and visual style, and ran the render pipeline for the team.</p></div>
+        <div class="job"><span class="r">Freelance 3D Artist</span><span class="m">2022–2024</span><p>Props and environments with PBR texturing, retopology and UVs, plus final stills and sequences.</p></div>
+        <div class="job"><span class="r">Web & Graphic Designer</span><span class="m">IT Desarrollos SRL · 2023–present</span><p>UI design and prototypes in Figma, brand system and visual assets.</p></div>
+        <div class="job"><span class="r">Graphic Designer</span><span class="m">Pristine Luxury Camps · 2022–2023</span><p>Brand manual, brochures and social media assets.</p></div>
+        <h3 style="margin-top:30px">Education</h3>
+        <div class="job"><span class="r">Multimedia Design</span><span class="m">ISEC · 2020–2023</span></div>
+        <div class="job"><span class="r">Video Game Design</span><span class="m">Escuela Da Vinci · 2017–2019</span></div>
+        <div class="job"><span class="r">Graphic & Industrial Design Technician</span><span class="m">ORT · 2012–2016</span></div>
+      </div>
+    </div>
+    </div>
+  </section>
+
+  <section id="other">
+    <div class="panel">
+    <div class="head">
+      <svg class="fence" aria-hidden="true"><use href="#fence"/></svg>
+      <h2>Other work</h2>
+      <p class="lead">Design and web projects outside 3D.</p>
+    </div>
+    <div class="other">
+      <a href="#" target="_blank" rel="noopener"><strong>App 1 (name)</strong><span>Designed and shipped. Live on GitHub Pages.</span></a>
+      <a href="#" target="_blank" rel="noopener"><strong>App 2 (name)</strong><span>Designed and shipped. Live on GitHub Pages.</span></a>
+      <a href="https://behance.net/tomascarballes" target="_blank" rel="noopener"><strong>Behance</strong><span>Graphic design and branding work.</span></a>
+    </div>
+    </div>
+  </section>
+
+  <footer id="contact">
+    <div class="panel">
+    <svg class="fence" aria-hidden="true"><use href="#fence"/></svg>
+    <h2>Contact</h2>
+    <div class="contact">
+      <span class="mail">tomaspcarballes@gmail.com</span>
+      <a href="https://www.artstation.com/tomascarballes" target="_blank" rel="noopener">ArtStation</a>
+      <a href="https://linkedin.com/in/tomas-carballes" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://behance.net/tomascarballes" target="_blank" rel="noopener">Behance</a>
+    </div>
+    <span class="small">Walls, torches and site visuals modeled by me in Blender. <em>(pending: swap placeholders for my 3D renders)</em></span>
+    <span class="small">© 2026 Tomas Carballes</span>
+    </div>
+  </footer>
+</div>
+  <div class="ground">
+    <!-- PLACEHOLDER: replace with your 3D grass/skull render: img/grass.png -->
+    <div class="grass"><img src="img/grass.png" alt="" onerror="this.remove()"></div>
+    <svg class="skull s1" viewBox="0 0 40 40" aria-hidden="true"><use href="#skull"/></svg>
+    <svg class="skull s2" viewBox="0 0 40 40" aria-hidden="true"><use href="#skull"/></svg>
+  </div>
+  </div>
+</div>
+<script>
+(function(){
+  var c=document.getElementById('fx'), st=document.getElementById('stars'); if(!c) return;
+  var x=c.getContext('2d'), sx=st?st.getContext('2d'):null;
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches, visible=true;
+  var W,H,wisps=[],stars=[];
+  function size(){var r=c.getBoundingClientRect();W=c.width=r.width;H=c.height=r.height;if(st){st.width=W;st.height=H;drawStars();}}
+  function drawStars(){ if(!sx) return; sx.clearRect(0,0,W,H);
+    if(!stars.length) for(var i=0;i<140;i++) stars.push({x:Math.random(),y:Math.random()*.6,r:Math.random()*1.1+.2,a:Math.random()*.6+.15});
+    stars.forEach(function(s){sx.globalAlpha=s.a;sx.fillStyle='#d9dcef';sx.beginPath();sx.arc(s.x*W,s.y*H,s.r,0,6.28);sx.fill();}); sx.globalAlpha=1;}
+  var tints=['150,175,160','140,125,190','120,140,180'];
+  for(var i=0;i<26;i++){var layer=i%3;wisps.push({x:Math.random()*1.4-.2,y:.35+Math.random()*.7,r:220+Math.random()*320,
+    v:(.15+layer*.18)*(Math.random()<.5?-1:1)/3000,a:.035+Math.random()*.045,t:tints[i%3],sq:.28+Math.random()*.18});}
+  size(); addEventListener('resize',size);
+  function draw(){
+    x.clearRect(0,0,W,H);
+    wisps.forEach(function(w){w.x+=w.v*16; if(w.x<-.4)w.x=1.4; if(w.x>1.4)w.x=-.4;
+      x.save();x.translate(w.x*W,w.y*H);x.scale(1,w.sq);
+      var g=x.createRadialGradient(0,0,0,0,0,w.r);g.addColorStop(0,'rgba('+w.t+','+w.a+')');g.addColorStop(.6,'rgba('+w.t+','+(w.a*.4)+')');g.addColorStop(1,'rgba('+w.t+',0)');
+      x.fillStyle=g;x.beginPath();x.arc(0,0,w.r,0,6.28);x.fill();x.restore();});
+    if(!reduce&&visible) requestAnimationFrame(draw);
+  }
+  if('IntersectionObserver' in window){new IntersectionObserver(function(e){var was=visible;visible=e[0].isIntersecting;if(visible&&!was&&!reduce)requestAnimationFrame(draw);}).observe(c);}
+  draw();
+})();
+</script>
+<script>
+(function(){
+  var bar=document.getElementById('bar'),ic=document.getElementById('introContent'),down=document.getElementById('down');
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function onScroll(){
+    var h=innerHeight,y=scrollY,k=Math.min(y/(h*.6),1);
+    if(!reduce&&ic){ic.style.transform='translateY('+(-y*0.25)+'px)';ic.style.opacity=String(1-k*1.3);}
+    if(down)down.style.opacity=String(Math.max(0,.85-k*3));
+    bar.classList.toggle('show',y>h*1.1);
+  }
+  addEventListener('scroll',onScroll,{passive:true});onScroll();
+  down.addEventListener('click',function(e){e.preventDefault();document.getElementById('work').scrollIntoView({behavior:reduce?'auto':'smooth'});});
+})();
+</script>
+</body>
+</html>

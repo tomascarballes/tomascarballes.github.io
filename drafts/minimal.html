@@ -1,0 +1,179 @@
+<title>Tomas Carballes Portfolio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+/* Layout: dark render-viewport feel; work grid first, CV and other work below as quieter sections */
+:root{
+  --bg:#0f1012; --surface:#17191c; --line:#2a2d32; --fg:#ecebe7; --muted:#9a9ca1; --accent:#e8a24a;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Instrument Sans",ui-sans-serif,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#f3f2ef;--surface:#ffffff;--line:#dcdad5;--fg:#16171a;--muted:#5f6166;--accent:#b8721c;color-scheme:light}}
+:root[data-theme="light"]{--bg:#f3f2ef;--surface:#ffffff;--line:#dcdad5;--fg:#16171a;--muted:#5f6166;--accent:#b8721c;color-scheme:light}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.6 var(--body)}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:inherit}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+nav{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:20px;flex-wrap:wrap}
+nav .name{font:700 18px var(--display);text-decoration:none}
+nav ul{display:flex;gap:20px;list-style:none;margin:0;padding:0;font-size:14px;flex-wrap:wrap}
+nav ul a{text-decoration:none;color:var(--muted)}
+nav ul a:hover{color:var(--fg)}
+.hero{padding-block:48px 40px;display:grid;gap:12px}
+.label{font:12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 clamp(44px,8vw,92px)/1 var(--display);margin:0;letter-spacing:-.02em;text-wrap:balance}
+.sub{font-size:clamp(17px,2.2vw,21px);color:var(--muted);margin:0;max-width:40ch}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:6px;border:1px solid var(--line);text-decoration:none;font-weight:600;font-size:14px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#141414}
+.btn:hover{border-color:var(--fg)}
+section{padding-block:56px;border-top:1px solid var(--line)}
+h2{font:700 clamp(26px,3.5vw,36px)/1.1 var(--display);margin:0 0 8px}
+.lead{color:var(--muted);margin:0 0 28px;max-width:60ch}
+.reel{aspect-ratio:16/9;max-width:100%;background:var(--surface);border:1px dashed var(--line);border-radius:8px;display:grid;place-items:center;text-align:center;color:var(--muted);font:13px var(--mono);padding:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.card{display:grid;gap:12px;text-decoration:none}
+.thumb{aspect-ratio:4/3;max-width:100%;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,var(--surface),var(--line));position:relative}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+.card:hover .thumb img{transform:scale(1.04)}
+.thumb .ph{position:absolute;inset:0;display:grid;place-items:center;font:600 18px var(--display);color:var(--muted);padding:16px;text-align:center}
+.card h3{font:600 19px var(--display);margin:0}
+.card p{margin:2px 0 0;color:var(--muted);font-size:14px}
+.tags{font:12px var(--mono);color:var(--accent)}
+.featured{grid-column:1/-1}
+.featured .thumb{aspect-ratio:21/9}
+.cv{display:grid;grid-template-columns:1fr 2fr;gap:40px}
+.cv > *{min-width:0}
+.cv h3{font:12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+.cv ul{list-style:none;margin:0 0 28px;padding:0;display:grid;gap:4px}
+.job{display:grid;gap:4px;padding-block:16px;border-bottom:1px solid var(--line)}
+.job:first-of-type{padding-top:0}
+.job .role{font-weight:600}
+.job .meta{font:13px var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.job p{margin:4px 0 0;color:var(--muted);font-size:15px}
+.job.main .role{color:var(--accent)}
+.dl{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px}
+.other{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.other a{display:grid;gap:6px;padding:18px;border:1px solid var(--line);border-radius:8px;text-decoration:none}
+.other a:hover{border-color:var(--muted)}
+.other strong{font-family:var(--display)}
+.other span{color:var(--muted);font-size:14px}
+footer{padding-block:56px;border-top:1px solid var(--line);display:grid;gap:16px}
+.contact{display:flex;gap:24px;flex-wrap:wrap;font-size:15px}
+.contact span{user-select:all}
+.muted{color:var(--muted)}
+@media (max-width:720px){.cv{grid-template-columns:1fr;gap:8px}.featured .thumb{aspect-ratio:4/3}}
+@media (prefers-reduced-motion:reduce){.thumb img{transition:none}}
+</style>
+
+<div class="wrap">
+  <nav>
+    <a class="name" href="#top">Tomas Carballes</a>
+    <ul>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#cv">CV</a></li>
+      <li><a href="#other">Other work</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <header class="hero" id="top">
+    <span class="label">Buenos Aires, Argentina</span>
+    <h1>3D Generalist</h1>
+    <p class="sub">Lighting, lookdev and environments in Blender. With a background in multimedia and web design.</p>
+    <div class="cta">
+      <a class="btn primary" href="#work">See work</a>
+      <a class="btn" href="https://www.artstation.com/tomascarballes" target="_blank" rel="noopener">ArtStation</a>
+      <a class="btn" href="#cv">CV</a>
+    </div>
+  </header>
+
+  <section id="work">
+    <h2>Work</h2>
+    <p class="lead">Selected projects. Each one opens on ArtStation with the full breakdown.</p>
+
+    <div class="reel" style="margin-bottom:28px">Demo reel coming soon</div>
+
+    <div class="grid">
+      <a class="card featured" href="https://www.artstation.com/artwork/Zl5DKN" target="_blank" rel="noopener">
+        <div class="thumb"><span class="ph">Just a Normal Fridge</span><img src="https://cdna.artstation.com/p/assets/video_clips/images/078/808/686/large/tomas-carballes-thumb.jpg?1723129745" alt="Just a Normal Fridge render" loading="lazy" onerror="this.remove()"></div>
+        <div><span class="tags">Personal · Lighting · Set dressing</span><h3>Just a Normal Fridge</h3><p>An everyday fridge used to tell a story about loneliness and addiction. Focus on light, color and composition.</p></div>
+      </a>
+      <a class="card" href="https://www.artstation.com/artwork/Jrld3D" target="_blank" rel="noopener">
+        <div class="thumb"><span class="ph">Potion Designs</span><img src="https://cdna.artstation.com/p/assets/images/images/079/000/308/20251018131749/large/tomas-carballes-1630361230456.jpg?1760811470" alt="Glass potion bottles render" loading="lazy" onerror="this.remove()"></div>
+        <div><span class="tags">Lookdev · Materials</span><h3>Potion Designs</h3><p>Glass, liquid and label materials. Modeling, texturing and lighting.</p></div>
+      </a>
+      <a class="card" href="https://www.artstation.com/artwork/Ov8eQK" target="_blank" rel="noopener">
+        <div class="thumb"><span class="ph">Astros de Papel</span><img src="https://cdnb.artstation.com/p/assets/images/images/098/739/775/large/tomas-carballes-530323591-17958779486972866-6342946543259570624-n.webp?1777932388" alt="Astros de Papel short film still" loading="lazy" onerror="this.remove()"></div>
+        <div><span class="tags">Short film · Lighting & Render Director</span><h3>Astros de Papel</h3><p>Team production, 2023–2025. Assets, master lighting shader and render pipeline.</p></div>
+      </a>
+      <a class="card" href="https://www.artstation.com/artwork/rlN8na" target="_blank" rel="noopener">
+        <div class="thumb"><span class="ph">The Bloodseer</span><img src="https://cdnb.artstation.com/p/assets/covers/images/092/701/909/large/tomas-carballes-tomas-carballes-artstationprojectcoverfinal-custom.jpg?1760408544" alt="The Bloodseer relic" loading="lazy" onerror="this.remove()"></div>
+        <div><span class="tags">Prop · Rigging · Animation</span><h3>The Bloodseer</h3><p>A fantasy relic, from concept to final edit: modeling, rigging, UVs, texturing and render.</p></div>
+      </a>
+      <a class="card" href="https://www.artstation.com/artwork/03Lr0Y" target="_blank" rel="noopener">
+        <div class="thumb"><span class="ph">Moaning Myrtle's Bathroom</span><img src="https://cdnb.artstation.com/p/assets/images/images/048/345/595/20220412175019/large/tomas-carballes-test5-grande.jpg?1649803819" alt="Gothic bathroom environment" loading="lazy" onerror="this.remove()"></div>
+        <div><span class="tags">Environment · Fan art</span><h3>Moaning Myrtle's Bathroom</h3><p>Full environment recreation with a camera walkthrough.</p></div>
+      </a>
+    </div>
+  </section>
+
+  <section id="cv">
+    <h2>CV</h2>
+    <p class="lead">Multimedia Design graduate (ISEC). I want to join a production team working on games, film or high-end advertising.</p>
+    <div class="dl">
+      <a class="btn" href="cv/Tomas_Carballes_EN.pdf" target="_blank" rel="noopener">Download CV · English</a>
+      <a class="btn" href="cv/Tomas_Carballes_ES.pdf" target="_blank" rel="noopener">Descargar CV · Español</a>
+    </div>
+    <div class="cv">
+      <div>
+        <h3>3D skills</h3>
+        <ul>
+          <li>High to low poly workflow</li><li>Sculpting & retopology</li><li>Hard surface modeling</li><li>UVs & optimization</li><li>PBR & procedural texturing</li><li>Set dressing</li><li>Cinematic lighting & shading</li><li>Compositing & color grading</li>
+        </ul>
+        <h3>Tools</h3>
+        <ul>
+          <li>Blender · ZBrush · Maya · 3ds Max</li><li>Substance Painter · Designer</li><li>Marmoset Toolbag</li><li>Photoshop · After Effects · Premiere</li><li>Figma · HTML · CSS</li>
+        </ul>
+        <h3>Languages</h3>
+        <ul><li>Spanish · Native</li><li>English · Advanced</li></ul>
+      </div>
+      <div>
+        <h3>Experience</h3>
+        <div class="job main"><span class="role">Lighting & Render Director / 3D Artist</span><span class="meta">Astros de Papel (short film) · 2023–2025</span><p>Built assets and environments in Blender, co-developed the master lighting shader and visual style, and ran the render pipeline for the team.</p></div>
+        <div class="job main"><span class="role">Freelance 3D Artist</span><span class="meta">2022–2024</span><p>Props and environments with PBR texturing, retopology and UVs, plus final stills and sequences.</p></div>
+        <div class="job"><span class="role">Web & Graphic Designer</span><span class="meta">IT Desarrollos SRL · 2023–present</span><p>UI design and prototypes in Figma, brand system and visual assets.</p></div>
+        <div class="job"><span class="role">Graphic Designer</span><span class="meta">Pristine Luxury Camps · 2022–2023</span><p>Brand manual, brochures and social media assets.</p></div>
+        <h3 style="margin-top:28px">Education</h3>
+        <div class="job"><span class="role">Multimedia Design</span><span class="meta">ISEC · 2020–2023</span></div>
+        <div class="job"><span class="role">Video Game Design</span><span class="meta">Escuela Da Vinci · 2017–2019</span></div>
+        <div class="job"><span class="role">Graphic & Industrial Design Technician</span><span class="meta">ORT · 2012–2016</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="other">
+    <h2>Other work</h2>
+    <p class="lead">Design and web projects outside 3D.</p>
+    <div class="other">
+      <a href="#" target="_blank" rel="noopener"><strong>App 1 (name)</strong><span>Designed and shipped. Live on GitHub Pages.</span></a>
+      <a href="#" target="_blank" rel="noopener"><strong>App 2 (name)</strong><span>Designed and shipped. Live on GitHub Pages.</span></a>
+      <a href="https://behance.net/tomascarballes" target="_blank" rel="noopener"><strong>Behance</strong><span>Graphic design and branding work.</span></a>
+    </div>
+  </section>
+
+  <footer id="contact">
+    <h2>Contact</h2>
+    <div class="contact">
+      <span>tomaspcarballes@gmail.com</span>
+      <a href="https://www.artstation.com/tomascarballes" target="_blank" rel="noopener">ArtStation</a>
+      <a href="https://linkedin.com/in/tomas-carballes" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://behance.net/tomascarballes" target="_blank" rel="noopener">Behance</a>
+    </div>
+    <span class="muted" style="font-size:13px">© 2026 Tomas Carballes</span>
+  </footer>
+</div>
