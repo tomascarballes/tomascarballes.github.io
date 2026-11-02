@@ -45,5 +45,6 @@ Conseguir trabajo como **3D Generalist** (juegos, cine, publicidad). La web es l
 - [ ] Imagen og:image para la vista previa del link en DMs.
 - [ ] Reemplazos 3D: muro, antorchas, pasto/calaveras, marco, niebla en loop, banner.
 - [ ] Reel (re-render con cámara, 16:9, ~1 min).
+- [ ] Mostrar retopología con las esculturas del curso: high poly vs low poly, wireframes y bakes (para el portfolio, ArtStation y el reel).
 - [ ] ArtStation: titular a "3D Generalist", portada de Astros que muestre luz/render, revisar baño gótico, revisar Bloodseer.
 - [ ] Opcional: dominio propio (tomascarballes.com).
