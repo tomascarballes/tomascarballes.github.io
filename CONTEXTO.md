@@ -16,6 +16,13 @@ Conseguir trabajo como **3D Generalist** (juegos, cine, publicidad). La web es l
 - `cv/` — PDFs del CV (pendiente).
 - `drafts/` — versiones anteriores del diseño (minimalista, gótica bordó, cementerio v11).
 
+## CV
+- Contenido en `tools/build_cv.py` (dict DATA, inglés y español). Editar ahí y correr:
+  - Web (público): `python3 tools/build_cv.py` → genera `cv/en.html`, `cv/es.html` y los PDF.
+  - Completo (con teléfono, para postulaciones): `python3 tools/build_cv.py --phone "..." --area "Villa Ortuzar, Argentina" --out <carpeta fuera del repo>`.
+- El teléfono NUNCA se guarda en el repo (es público). El script se niega a escribir la versión completa adentro del repo.
+- Diseño: el mismo del CV original (blanco, azul, dos columnas), sin estética gótica, para lectura automática e impresión.
+
 ## Decisiones
 - Título: nombre grande + "3D Generalist". Subtítulo: Modeling · Lookdev · Lighting · Rendering.
 - Nada de "Open to work" en el banner (decisión de Tomas).
@@ -33,7 +40,7 @@ Conseguir trabajo como **3D Generalist** (juegos, cine, publicidad). La web es l
 - [ ] Portadas limpias de los 5 trabajos (sin título incrustado).
 - [ ] Nombres y links de las 2 apps (Other work).
 - [ ] Revisar texto del About (lo redactó Claude).
-- [ ] CV: pasar a HTML como fuente única; decidir qué datos van públicos (teléfono, barrio) y subir PDFs a `cv/`; luego quitar `hidden` de los botones.
+- [x] CV en HTML como fuente única (`tools/build_cv.py`). Versión web sin teléfono ni barrio en `cv/`; botones de descarga activos.
 - [x] Web publicada en GitHub Pages; corregidos 2 links de portadas de ArtStation.
 - [ ] Imagen og:image para la vista previa del link en DMs.
 - [ ] Reemplazos 3D: muro, antorchas, pasto/calaveras, marco, niebla en loop, banner.
