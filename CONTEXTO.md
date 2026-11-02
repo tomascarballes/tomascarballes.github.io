@@ -34,6 +34,7 @@ Conseguir trabajo como **3D Generalist** (juegos, cine, publicidad). La web es l
 - [ ] Nombres y links de las 2 apps (Other work).
 - [ ] Revisar texto del About (lo redactó Claude).
 - [ ] CV: pasar a HTML como fuente única; decidir qué datos van públicos (teléfono, barrio) y subir PDFs a `cv/`; luego quitar `hidden` de los botones.
+- [x] Web publicada en GitHub Pages; corregidos 2 links de portadas de ArtStation.
 - [ ] Imagen og:image para la vista previa del link en DMs.
 - [ ] Reemplazos 3D: muro, antorchas, pasto/calaveras, marco, niebla en loop, banner.
 - [ ] Reel (re-render con cámara, 16:9, ~1 min).
