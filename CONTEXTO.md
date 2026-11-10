@@ -12,8 +12,9 @@ Conseguir trabajo como **3D Generalist** (juegos, cine, publicidad). La web es l
 
 ## Estructura
 - `index.html` — toda la web (HTML + CSS + JS en un archivo).
-- `img/` — imágenes propias. `about.jpg` (foto). Placeholders que se activan solos si existen: `banner.jpg`, `wall.png`, `sconce.png`, `grass.png`, y portadas `fridge.jpg`, `potions.jpg`, `astros.jpg`, `bloodseer.jpg`, `bathroom.jpg` (respaldo si no cargan las de ArtStation).
+- `img/` — imágenes propias. `about.jpg` (foto). Placeholders que se activan solos si existen: `banner.jpg`, `wall.png`, `wall-tile.jpg`, `sconce.png`, `grass.png`, `frame.png`, `fog.webm`/`fog.mp4`, `og.jpg`, y portadas `fridge.jpg`, `potions.jpg`, `astros.jpg`, `bloodseer.jpg`, `bathroom.jpg` (respaldo si no cargan las de ArtStation).
 - `cv/` — PDFs del CV (pendiente).
+- `plantillas-3d/` — plantillas guía PNG, script de Blender (`setup_web_assets.py`) y `GUIA.md` con specs de cada asset 3D.
 - `drafts/` — versiones anteriores del diseño (minimalista, gótica bordó, cementerio v11).
 
 ## CV

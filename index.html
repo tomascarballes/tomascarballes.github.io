@@ -7,7 +7,9 @@
 <meta name="description" content="Tomas Carballes, 3D generalist based in Buenos Aires. Lighting, lookdev and environments in Blender.">
 <meta property="og:title" content="Tomas Carballes · 3D Generalist">
 <meta property="og:description" content="Lighting, lookdev and environments. Portfolio, CV and contact.">
-<!-- When hosted, add: <meta property="og:image" content="https://YOUR-SITE/img/banner.jpg"> so the link shows a preview in DMs -->
+<meta property="og:image" content="https://tomascarballes.github.io/img/og.jpg">
+<meta property="og:url" content="https://tomascarballes.github.io/">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Cormorant+SC:wght@500;600&family=Spectral:wght@300;400&display=swap">
 <style>
@@ -186,8 +188,14 @@ nav .name{font-family:var(--gothic);letter-spacing:.12em}
     repeating-linear-gradient(0deg, transparent 0 46px, rgba(0,0,0,.5) 46px 48px),
     repeating-linear-gradient(90deg, transparent 0 94px, rgba(0,0,0,.38) 94px 96px),
     linear-gradient(180deg,#1b1f1d,#141816 50%,#101311);
-  /* PLACEHOLDER: replace with your 3D stone wall texture: background: url(img/wall-tile.jpg) center/600px repeat */
+  /* 3D asset: img/wall-tile.jpg (1024x1024 tileable). When it exists, JS adds .has-tile and it replaces the pattern */
 }
+.has-tile .castle-body{background:radial-gradient(ellipse 60% 40% at 50% 0%, rgba(0,0,0,.6), transparent 70%),url(img/wall-tile.jpg) center top/512px repeat,#101311}
+.frame-png{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.frame:has(.frame-png) .gild{display:none}
+#fogv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:screen;pointer-events:none;z-index:1;opacity:0;transition:opacity 1.2s}
+#fogv.on{opacity:1}
+#fogv.on ~ #fx{display:none}
 .castle-body > .wrap{padding-block:16px}
 section{padding-block:28px}
 .panel{background:rgba(7,9,8,.88);border:1px solid var(--line);padding:clamp(22px,4vw,48px);backdrop-filter:blur(3px);box-shadow:0 20px 60px -20px rgba(0,0,0,.8)}
@@ -297,6 +305,8 @@ function imgFallback(img){var l=img.getAttribute("data-local");if(l){img.removeA
     <canvas id="stars" aria-hidden="true"></canvas>
     <div class="moon" aria-hidden="true"></div>
     <img class="banner" src="img/banner.jpg" alt="" onerror="this.remove()">
+    <!-- 3D asset: img/fog.webm + img/fog.mp4 (black background, loop). Replaces the code fog when present -->
+    <video id="fogv" autoplay muted loop playsinline preload="auto" aria-hidden="true"><source src="img/fog.webm" type="video/webm"><source src="img/fog.mp4" type="video/mp4"></video>
     <canvas id="fx" aria-hidden="true"></canvas>
     <div class="intro-content" id="introContent">
       <h1>Tomas Carballes</h1>
@@ -366,6 +376,8 @@ function imgFallback(img){var l=img.getAttribute("data-local");if(l){img.removeA
       <div class="frame">
         <svg class="hang" viewBox="0 0 200 60" aria-hidden="true"><path d="M30 60 L100 8 L170 60" fill="none" stroke="#3b3226" stroke-width="2"/><circle cx="100" cy="8" r="5" fill="#2a2520" stroke="#6b5a3e" stroke-width="1.5"/></svg>
         <img class="photo" src="img/about.jpg" alt="Tomas Carballes" width="160" height="160">
+        <!-- 3D asset: img/frame.png (600x740, transparent hole). Replaces the code frame when present -->
+        <img class="frame-png" src="img/frame.png" alt="" onerror="this.remove()">
         <svg class="gild" viewBox="0 0 220 270" aria-hidden="true">
           <defs>
             <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
@@ -522,6 +534,15 @@ function imgFallback(img){var l=img.getAttribute("data-local");if(l){img.removeA
   }
   addEventListener('scroll',onScroll,{passive:true});onScroll();
   down.addEventListener('click',function(e){e.preventDefault();document.getElementById('work').scrollIntoView({behavior:reduce?'auto':'smooth'});});
+})();
+</script>
+<script>
+(function(){
+  var t=new Image(); t.onload=function(){document.documentElement.classList.add('has-tile');}; t.src='img/wall-tile.jpg';
+  var v=document.getElementById('fogv');
+  if(v){ if(matchMedia('(prefers-reduced-motion: reduce)').matches){v.remove();return;}
+    v.addEventListener('playing',function(){v.classList.add('on');});
+    var p=v.play&&v.play(); if(p&&p.catch)p.catch(function(){}); }
 })();
 </script>
 </body>
