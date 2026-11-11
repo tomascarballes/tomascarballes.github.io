@@ -111,6 +111,7 @@ def set_view(scene):
     scene.display_settings.display_device = "sRGB"
 
 def find_lc(layer_coll, name):
+    if layer_coll is None: return None
     if layer_coll.collection.name == name: return layer_coll
     for ch in layer_coll.children:
         r = find_lc(ch, name)
@@ -159,7 +160,10 @@ for name, w, h, tpl, transparent, fmt, out, cam_kind, cols in ASSETS:
     if name == "WEB_niebla":
         sc.render.fps, sc.frame_start, sc.frame_end = 24, 1, 240     # 10 s en loop
 
-    vl = sc.view_layers[0]
+    # una escena recién creada no arma sus capas hasta que se abre: la abrimos un instante
+    bpy.context.window.scene = sc
+    vl = bpy.context.view_layer
+    vl.update()
     for n in COLLECTIONS:
         lc = find_lc(vl.layer_collection, n)
         if not lc: continue
