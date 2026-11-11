@@ -1,6 +1,6 @@
 # Guía: assets 3D para la web
 
-Todo lo que necesitás para que lo que hagas en Blender encaje directo en https://tomascarballes.github.io. Si respetás nombre, tamaño y formato, el asset reemplaza solo al placeholder.
+Esta carpeta tiene todo lo que necesitás para que lo que hagas en Blender encaje directo en https://tomascarballes.github.io. Si respetás nombre, tamaño y formato, el asset reemplaza solo al placeholder.
 
 ## Qué hay en esta carpeta
 
@@ -8,7 +8,7 @@ Todo lo que necesitás para que lo que hagas en Blender encaje directo en https:
 |---|---|
 | `01` a `08` `-*.png` | Plantillas guía, una por asset, al tamaño exacto. Zonas marcadas: dónde va el texto, qué se recorta en celular, dónde tiene que haber transparencia. **No van en el render.** |
 | `setup_web_assets.py` | Script de Blender: crea una escena por asset con la resolución, la cámara, la transparencia, el formato y la plantilla de fondo ya configurados. |
-| `GUIA.md` | Esta guía. |
+| `GUIA.pdf` | Esta guía. |
 
 ## Cómo arrancar
 
