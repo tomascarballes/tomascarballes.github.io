@@ -150,22 +150,36 @@ def place_camera(cam, cd, kind):
         cam.location, cam.rotation_euler = (0, -60, 2), (math.radians(88), 0, 0)
     cd.clip_end = 500
 
+def set_media(r, kind):
+    # Blender 5 separa imagen y video en "media_type"; en Blender 4 no existe y se ignora
+    if hasattr(r.image_settings, "media_type"):
+        try: r.image_settings.media_type = kind
+        except Exception: pass
+
 def set_output(sc, fmt, transparent):
+    """Devuelve True si quedó como video, False si quedó como secuencia PNG (respaldo)."""
     r = sc.render
     if fmt == "VIDEO":
-        r.image_settings.file_format = "FFMPEG"
+        set_media(r, "VIDEO")
         try:
+            r.image_settings.file_format = "FFMPEG"
             r.ffmpeg.format = "MPEG4"; r.ffmpeg.codec = "H264"
             r.ffmpeg.constant_rate_factor = "MEDIUM"; r.ffmpeg.ffmpeg_preset = "GOOD"
-            r.ffmpeg.audio_codec = "NONE"
+            try: r.ffmpeg.audio_codec = "NONE"
+            except Exception: pass
+            r.image_settings.color_mode = "RGB"
+            return True
         except Exception as e:
-            print("No pude configurar el video (revisalo a mano en Output):", e)
-        r.image_settings.color_mode = "RGB"
-    else:
-        r.image_settings.file_format = fmt
-        r.image_settings.color_mode = "RGBA" if transparent else "RGB"
-        if fmt == "PNG": r.image_settings.compression = 90
-        else: r.image_settings.quality = 88
+            print("Este Blender no deja configurar video desde el script (", e, "). Queda como secuencia PNG.")
+            set_media(r, "IMAGE")
+            r.image_settings.file_format = "PNG"; r.image_settings.color_mode = "RGB"
+            return False
+    set_media(r, "IMAGE")
+    r.image_settings.file_format = fmt
+    r.image_settings.color_mode = "RGBA" if transparent else "RGB"
+    if fmt == "PNG": r.image_settings.compression = 90
+    else: r.image_settings.quality = 88
+    return False
 
 for name, w, h, tpl, transparent, fmt, out, cam_kind, cols in ASSETS:
     sc = bpy.data.scenes.get(name) or bpy.data.scenes.new(name)
@@ -175,8 +189,12 @@ for name, w, h, tpl, transparent, fmt, out, cam_kind, cols in ASSETS:
     r.engine = "CYCLES"
     r.resolution_x, r.resolution_y, r.resolution_percentage = w, h, 100
     r.film_transparent = transparent
-    set_output(sc, fmt, transparent)
-    r.filepath = "//render_web/" + out
+    is_video = set_output(sc, fmt, transparent)
+    if fmt == "VIDEO" and not is_video:   # respaldo: frames PNG en una carpeta con el mismo nombre
+        base_ = out[:-4]
+        r.filepath = "//render_web/" + base_ + "_frames/" + os.path.basename(base_) + "_####"
+    else:
+        r.filepath = "//render_web/" + out
     set_view(sc)
     sc.render.fps = 24
     if name.startswith("WEB_antorcha_"): sc.frame_start, sc.frame_end = 1, 48    # 2 s en loop
