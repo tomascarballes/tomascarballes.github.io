@@ -12,7 +12,7 @@ Conseguir trabajo como **3D Generalist** (juegos, cine, publicidad). La web es l
 
 ## Estructura
 - `index.html` — toda la web (HTML + CSS + JS en un archivo).
-- `img/` — imágenes propias. `about.jpg` (foto). Placeholders que se activan solos si existen: `banner.jpg`, `wall.png` (con antorchas horneadas; esconde las de código), `flame-left.webp`/`flame-right.webp` (llamas animadas, ubicadas por JS en px 420,135 y 2140,135 del muro), `wall-tile.jpg`, `grass.png`, `frame.png`, `fog.webm`/`fog.mp4`, `og.jpg`, y portadas `fridge.jpg`, `potions.jpg`, `astros.jpg`, `bloodseer.jpg`, `bathroom.jpg` (respaldo si no cargan las de ArtStation).
+- `img/` — imágenes propias. `about.jpg` (foto). Placeholders que se activan solos si existen: `banner.jpg`, `muro/compu_N.webp` y `muro/celu_N.webp`, `antorchas.json` + `antorchas/<id>.mp4`, `grass.png`, `frame.png`, `fog.webm`/`fog.mp4`, `og.jpg`, y portadas `fridge.jpg`, `potions.jpg`, `astros.jpg`, `bloodseer.jpg`, `bathroom.jpg` (respaldo si no cargan las de ArtStation).
 - `cv/` — PDFs del CV (pendiente).
 - `plantillas-3d/` — plantillas guía PNG, script de Blender (`setup_web_assets.py`, escena MASTER + escenas vinculadas) y `GUIA.pdf` con specs de cada asset 3D (fuente: `tools/guia-3d.md`, se regenera con `python3 tools/build_guia.py`).
 - `drafts/` — versiones anteriores del diseño (minimalista, gótica bordó, cementerio v11).
@@ -25,9 +25,11 @@ Conseguir trabajo como **3D Generalist** (juegos, cine, publicidad). La web es l
 - Diseño: el mismo del CV original (blanco, azul, dos columnas), sin estética gótica, para lectura automática e impresión.
 
 ## Assets 3D
-- Una sola escena MASTER con una sola iluminación; escenas WEB_* vinculadas (misma colección) con su cámara/resolución y modos por colección (se ve / solo luz / holdout / excluida). Cycles.
-- Escala 100 px = 1 m. Muro 25,6×3 m. Antorchas horneadas en wall.png; la llama sale aparte como WebP animado 128×192 (base en px 64,150) renderizado con cámara ortográfica de igual escala. Textura de fondo con luz neutra aparte.
+- Una escena MASTER con una sola iluminación; escenas WEB_* vinculadas (misma colección) con su cámara/resolución y modos por colección. Cycles.
+- Muro gigante 25,6 × 76,8 m (100 px = 1 m). Dos renders del mismo muro: compu 2560×7680 (6 partes de 1280) y celular 860×13440 (franja central 4,9 m, 7 partes de 1920). `cortar_muro.py` genera `img/muro/compu_N.webp` y `celu_N.webp`. La web apila las partes (escala = max(ancho/W, alto castle/H), centrado arriba) y elige set por ancho ≤720.
+- Muro con solo luz de luna. Cada antorcha = video 1024×1024 (10,24 m) con su fuego + su luz sobre el muro, fondo negro, sumado con plus-lighter y borde fundido. Posiciones en `img/antorchas.json` (id, x, z en m, size). Lista editable en TORCHES del script. Laterales en |x| 8,6–10,6 m; "arriba" (z 75,6) es la única visible en celular.
 - Generadores: `tools/build_plantillas.py` (PNGs), `tools/build_guia.py` (PDF desde `tools/guia-3d.md`).
+- Placeholder de código (muro CSS + antorchas) se muestra hasta que existe `img/muro/compu_1.webp` / `celu_1.webp`.
 
 ## Decisiones
 - Título: nombre grande + "3D Generalist". Subtítulo: Modeling · Lookdev · Lighting · Rendering.

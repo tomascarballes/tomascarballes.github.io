@@ -157,21 +157,22 @@ nav .name{font-family:var(--gothic);letter-spacing:.12em}
   -webkit-mask:linear-gradient(#000,#000) bottom/100% calc(100% - 36px) no-repeat, repeating-linear-gradient(90deg,#000 0 60px,transparent 60px 100px) top/100% 36px no-repeat;
           mask:linear-gradient(#000,#000) bottom/100% calc(100% - 36px) no-repeat, repeating-linear-gradient(90deg,#000 0 60px,transparent 60px 100px) top/100% 36px no-repeat}
 .wall-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
-.wall:has(.wall-img){background:none;-webkit-mask:none;mask:none}
+.muro3d{position:absolute;inset:0;overflow:hidden;z-index:0;display:none;background:#0b0e0c;isolation:isolate;pointer-events:none}
+.has-muro .muro3d{display:block}
+.has-muro .wall{background:none;-webkit-mask:none;mask:none}
+.has-muro .wall .sconce,.has-muro .wall .grass,.has-muro .wall .skull{display:none}
+.has-muro .castle-body{background:transparent}
+.castle .wall,.castle .castle-body{position:relative;z-index:1}
+.muro3d img{position:absolute;display:block;max-width:none}
+.muro3d video{position:absolute;max-width:none;mix-blend-mode:screen;
+  -webkit-mask-image:radial-gradient(closest-side,#000 55%,transparent 100%);mask-image:radial-gradient(closest-side,#000 55%,transparent 100%)}
+@supports (mix-blend-mode:plus-lighter){.muro3d video{mix-blend-mode:plus-lighter}}
 .sconce{position:absolute;bottom:22%;width:44px;height:70px}
 .sconce.left{left:8%}.sconce.right{right:8%}
 .sconce::before{content:"";position:absolute;left:50%;bottom:0;width:10px;height:46px;transform:translateX(-50%);background:linear-gradient(90deg,#1b1b1b,#4a4642,#1b1b1b);border-radius:2px}
 .sconce::after{content:"";position:absolute;left:50%;bottom:40px;width:30px;height:10px;transform:translateX(-50%);background:#3a3632;border-radius:2px}
 .sconce img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
-.wall:has(.wall-img) .sconce{display:none}
 .wall{overflow:visible}
-.fl3d{position:absolute;display:none;pointer-events:none}
-.wall:has(.wall-img) .fl3d.placed{display:block}
-.fl3d img{position:absolute;left:0;top:0;width:100%;height:100%}
-.fl3d:not(:has(img)) .glow{display:none}
-.fl3d .glow{position:absolute;left:50%;top:78%;width:260%;height:160%;transform:translate(-50%,-50%);border-radius:50%;
-  background:radial-gradient(closest-side,rgba(232,162,74,.22),rgba(232,162,74,0));mix-blend-mode:screen;animation:glowfl 2.3s infinite alternate ease-in-out}
-@keyframes glowfl{0%{opacity:.75}30%{opacity:1}55%{opacity:.82}80%{opacity:.95}100%{opacity:.85}}
 .flame{position:absolute;left:50%;bottom:48px;width:14px;height:22px;transform:translateX(-50%);border-radius:50% 50% 40% 40%;
   background:radial-gradient(circle at 50% 70%,#fff3c4,#e8a24a 45%,rgba(200,80,30,0) 75%);
   box-shadow:0 0 30px 14px rgba(232,162,74,.28),0 0 90px 40px rgba(232,162,74,.12);animation:flick 1.8s infinite alternate}
@@ -179,7 +180,7 @@ nav .name{font-family:var(--gothic);letter-spacing:.12em}
 .castle-body{background:var(--bg);position:relative}
 #work{padding-top:24px}
 @media (max-width:720px){.sconce{display:none}}
-@media (prefers-reduced-motion:reduce){.lights,.down,.flame,.fl3d .glow{animation:none}}
+@media (prefers-reduced-motion:reduce){.lights,.down,.flame{animation:none}}
 
 /* text support: soft black blur behind text that sits over animated or 3D backgrounds */
 .intro-content{isolation:isolate;padding:48px clamp(24px,6vw,72px)}
@@ -196,9 +197,7 @@ nav .name{font-family:var(--gothic);letter-spacing:.12em}
     repeating-linear-gradient(0deg, transparent 0 46px, rgba(0,0,0,.5) 46px 48px),
     repeating-linear-gradient(90deg, transparent 0 94px, rgba(0,0,0,.38) 94px 96px),
     linear-gradient(180deg,#1b1f1d,#141816 50%,#101311);
-  /* 3D asset: img/wall-tile.jpg (1024x1024 tileable). When it exists, JS adds .has-tile and it replaces the pattern */
 }
-.has-tile .castle-body{background:radial-gradient(ellipse 60% 40% at 50% 0%, rgba(0,0,0,.6), transparent 70%),url(img/wall-tile.jpg) center top/512px repeat,#101311}
 .frame-png{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
 .frame:has(.frame-png) .gild{display:none}
 #fogv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:screen;pointer-events:none;z-index:1;opacity:0;transition:opacity 1.2s}
@@ -333,16 +332,14 @@ function imgFallback(img){var l=img.getAttribute("data-local");if(l){img.removeA
 </div>
 
 <div class="castle">
-  <!-- PLACEHOLDER: replace this CSS wall with your 3D render: img/wall.png (transparent PNG, wide, top edge cut like a castle wall) -->
+  <!-- 3D wall: one tall render of the whole wall (moonlight only), cut in slices and stacked.
+       Desktop: img/muro/compu_1..6.webp (2560x1280 each). Mobile: img/muro/celu_1..7.webp (860x1920 each).
+       Torches: img/antorchas.json + img/antorchas/<id>.mp4 (flame + its light on the wall, on black, added with plus-lighter).
+       Until the slices exist, the code placeholder below is shown. -->
+  <div class="muro3d" id="muro3d" aria-hidden="true"></div>
   <div class="wall" aria-hidden="true">
-    <img class="wall-img" src="img/wall.png" alt="" onerror="this.remove()">
-    <!-- Placeholder torches (code). Hidden as soon as img/wall.png exists: the real torches are baked into the wall render. -->
     <div class="sconce left"><i class="flame"></i></div>
     <div class="sconce right"><i class="flame"></i></div>
-    <!-- 3D flames: img/flame-left.webp / img/flame-right.webp (animated WebP, 128x192, transparent).
-         Placed by JS on the torch mouths baked into wall.png at px (420,135) and (2140,135). -->
-    <div class="fl3d" data-x="420" data-y="135"><i class="glow"></i><img src="img/flame-left.webp" alt="" onerror="this.remove()"></div>
-    <div class="fl3d" data-x="2140" data-y="135"><i class="glow"></i><img src="img/flame-right.webp" alt="" onerror="this.remove()"></div>
   </div>
   <div class="castle-body">
 <div class="wrap">
@@ -550,7 +547,6 @@ function imgFallback(img){var l=img.getAttribute("data-local");if(l){img.removeA
 </script>
 <script>
 (function(){
-  var t=new Image(); t.onload=function(){document.documentElement.classList.add('has-tile');}; t.src='img/wall-tile.jpg';
   var v=document.getElementById('fogv');
   if(v){ if(matchMedia('(prefers-reduced-motion: reduce)').matches){v.remove();return;}
     v.addEventListener('playing',function(){v.classList.add('on');});
@@ -559,21 +555,54 @@ function imgFallback(img){var l=img.getAttribute("data-local");if(l){img.removeA
 </script>
 <script>
 (function(){
-  // Place 3D flames on the torch mouths of wall.png, matching object-fit:cover + object-position:top
-  var W=2560,H=300,FW=128,FH=192,BX=64,BY=150;
-  var wall=document.querySelector('.wall'),img=wall&&wall.querySelector('.wall-img');
-  function place(){
-    img=wall.querySelector('.wall-img'); if(!img) return;
-    var cw=wall.clientWidth,ch=wall.clientHeight,sc=Math.max(cw/W,ch/H),ox=(cw-W*sc)/2;
-    wall.querySelectorAll('.fl3d').forEach(function(f){
-      var x=ox+(+f.dataset.x)*sc,y=(+f.dataset.y)*sc;
-      f.style.width=FW*sc+'px'; f.style.height=FH*sc+'px';
-      f.style.left=(x-BX*sc)+'px'; f.style.top=(y-BY*sc)+'px';
-      f.classList.toggle('placed', x>0 && x<cw);
+  // 3D wall: stacked slices of one tall render + torch light videos added on top.
+  var SETS={
+    compu:{W:2560,H:7680,n:6,file:'img/muro/compu_',pxm:100,left:-12.8},
+    celu: {W:860, H:13440,n:7,file:'img/muro/celu_', pxm:175,left:-2.4571}
+  };
+  var TOP=76.8, castle=document.querySelector('.castle'), box=document.getElementById('muro3d');
+  if(!castle||!box) return;
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var cur=null, torches=null, imgs=[], vids=[];
+  function pick(){ return innerWidth<=720?'celu':'compu'; }
+  function build(key){
+    var S=SETS[key]; box.innerHTML=''; imgs=[]; vids=[];
+    for(var i=1;i<=S.n;i++){ var im=document.createElement('img'); im.alt=''; im.decoding='async';
+      if(i>2) im.loading='lazy'; im.src=S.file+i+'.webp'; box.appendChild(im); imgs.push(im); }
+    (torches||[]).forEach(function(t){
+      var v=document.createElement('video'); v.muted=true; v.loop=true; v.playsInline=true; v.autoplay=!reduce;
+      v.setAttribute('muted',''); v.setAttribute('playsinline',''); v.preload='metadata';
+      v.src='img/antorchas/'+t.id+'.mp4'; v._t=t; box.appendChild(v); vids.push(v);
+      v.addEventListener('error',function(){v.remove();});
     });
+    layout(); watch();
   }
-  if(img){ if(img.complete) place(); else img.addEventListener('load',place); }
-  addEventListener('resize',place);
+  function layout(){
+    if(!cur) return; var S=SETS[cur];
+    var cw=castle.clientWidth, ch=castle.clientHeight, sc=Math.max(cw/S.W, ch/S.H), ox=(cw-S.W*sc)/2, h=S.H/S.n;
+    imgs.forEach(function(im,i){ im.style.left=ox+'px'; im.style.top=(i*h*sc)+'px'; im.style.width=(S.W*sc)+'px'; im.style.height=(h*sc+1)+'px'; });
+    vids.forEach(function(v){ var t=v._t, sz=t.size*S.pxm*sc;
+      var x=ox+(t.x-S.left)*S.pxm*sc, y=(TOP-t.z)*S.pxm*sc;
+      v.style.width=v.style.height=sz+'px'; v.style.left=(x-sz/2)+'px'; v.style.top=(y-sz/2)+'px'; });
+  }
+  var io=null;
+  function watch(){
+    if(io) io.disconnect(); if(!('IntersectionObserver' in window)||reduce) return;
+    io=new IntersectionObserver(function(es){ es.forEach(function(e){ var v=e.target;
+      if(e.isIntersecting){ var p=v.play(); if(p&&p.catch)p.catch(function(){}); } else v.pause(); }); },{rootMargin:'200px'});
+    vids.forEach(function(v){ io.observe(v); });
+  }
+  function start(){ cur=pick(); document.documentElement.classList.add('has-muro'); build(cur); }
+  var probe=new Image();
+  probe.onload=function(){
+    fetch('img/antorchas.json').then(function(r){return r.ok?r.json():[];}).catch(function(){return [];})
+      .then(function(j){ torches=Array.isArray(j)?j:[]; start(); });
+  };
+  probe.src=SETS[pick()].file+'1.webp';
+  var tm; addEventListener('resize',function(){ clearTimeout(tm); tm=setTimeout(function(){
+    if(!document.documentElement.classList.contains('has-muro')) return;
+    var k=pick(); if(k!==cur){ cur=k; build(k); } else layout(); },150); });
+  if('ResizeObserver' in window) new ResizeObserver(function(){ layout(); }).observe(castle);
 })();
 </script>
 </body>

@@ -33,39 +33,48 @@ ab=(w/2-150,h-150,w/2+150,h-40); dash_rect(d,ab,YEL); label(d,(ab[0]-40,ab[1]-38
 label(d,(14,h-44),'Se ve al 40% de opacidad, con niebla animada encima. Valores bajos, paleta musgo / violeta / azul.',WHITE,s)
 im.save(OUT+'01-banner_2560x1440.png')
 
-# 2 wall
-w,h=2560,300; im,d,s=base(w,h,'MURO CON ALMENAS Y ANTORCHAS  img/wall.png'); s=18
-cy=60; d.rectangle([0,0,w,cy],fill=(80,220,255,35)); d.line([0,cy,w,cy],fill=CYAN,width=2)
-label(d,(14,34),'Almenas: arriba de esta línea, entre almena y almena TRANSPARENTE',CYAN,s)
-mw=1064; dash_rect(d,(w/2-mw/2,2,w/2+mw/2,h-2),MAG); label(d,(w/2-mw/2+10,cy+10),'CELULAR: solo se ve el centro (las antorchas quedan afuera)',MAG,s)
-for side,(fx,fy) in {'IZQ':(420,135),'DER':(2140,135)}.items():
-    d.rectangle([fx-40,fy-10,fx+40,fy+120],outline=YEL,width=2)
-    d.ellipse([fx-7,fy-7,fx+7,fy+7],fill=RED); d.line([fx-20,fy,fx+20,fy],fill=RED,width=2); d.line([fx,fy-20,fx,fy+20],fill=RED,width=2)
-    tb=(fx-64,fy-150,fx+64,fy+42); dash_rect(d,tb,RED,2,6)
-    label(d,(fx+46,fy+10),f'antorcha {side} ({fx}, {fy})',YEL,s)
-label(d,(14,h-62),'Punto rojo = boca de la antorcha: la llama nace acá (posición fija). Recuadro rojo = imagen de la llama.',RED,s)
-d.rectangle([0,h-34,w,h],fill=(120,255,140,40)); label(d,(14,h-30),'Borde inferior: fundir a piedra oscura (#101311). Antorchas y su luz SÍ van en este render; el fuego NO (solo su luz).',GRN,s)
-im.save(OUT+'02-muro_2560x300.png')
+# 2 muro compu (plantilla a la mitad: 1280x3840 = render 2560x7680)
+K=0.5; W,H=2560,7680; w,h=int(W*K),int(H*K)
+im=Image.new('RGBA',(w,h),(0,0,0,0)); d=ImageDraw.Draw(im); s=16
+d.rectangle([0,0,w-1,h-1],outline=WHITE,width=2)
+d.text((10,8),'MURO COMPU · render 2560x7680 (esta guía está a la mitad)',font=font(18,True),fill=WHITE,stroke_width=2,stroke_fill=(0,0,0,255))
+for i in range(1,6): y=i*1280*K; d.line([0,y,w,y],fill=WHITE,width=2); label(d,(w-150,y-22),f'corte {i} | {i+1}',WHITE,s)
+d.rectangle([0,0,w,60*K],fill=(80,220,255,40)); label(d,(10,34),'almenas: transparente entre ellas',CYAN,s)
+d.rectangle([0,60*K,w,293*K],outline=YEL,width=2); label(d,(10,60*K+6),'franja libre arriba (se ve antes del contenido): buen lugar para antorchas',YEL,s)
+cx=W/2*K; cc=860*K; d.rectangle([cx-cc,293*K,cx+cc,6530*K],fill=(255,70,70,28)); dash_rect(d,(cx-cc,293*K,cx+cc,6530*K),RED,2,10)
+label(d,(cx-cc+10,293*K+10),'DETRÁS DEL CONTENIDO: piedra oscura, sin antorchas',RED,s)
+for x0,x1 in ((220,420),(2140,2340)):
+    d.rectangle([x0*K,293*K,x1*K,6530*K],fill=(255,215,60,30)); dash_rect(d,(x0*K,293*K,x1*K,6530*K),YEL,2,10)
+label(d,(220*K+4,400*K),'antorchas',YEL,s); label(d,(220*K+4,400*K+20),'laterales',YEL,s)
+mx=491/2*K; dash_rect(d,(cx-mx,2,cx+mx,h-2),MAG,2,12); label(d,(cx-mx+6,h-30),'franja del celular',MAG,s)
+y=6530*K; d.line([0,y,w,y],fill=GRN,width=3); label(d,(10,y+6),'en pantallas grandes la página termina acá; en las chicas se usa hasta abajo',GRN,s)
+label(d,(10,h-60),'Solo luz de luna. Las antorchas (hierro) sí se ven; su fuego y su luz NO: van en los videos de antorcha.',WHITE,s)
+im.save(OUT+'02-muro-compu_2560x7680.png')
 
-# 3 tile
-w,h=1024,1024; im,d,s=base(w,h,'TEXTURA DE FONDO  img/wall-tile.jpg'); s=22
-for p in (0,w//2,w-1): d.line([p,0,p,h],fill=(255,255,255,90)); d.line([0,p,w,p],fill=(255,255,255,90))
-dash_rect(d,(2,2,w-3,h-3),RED,4)
-label(d,(20,60),'Tileable: el borde izquierdo continúa en el derecho',RED,s)
-label(d,(20,92),'y el de arriba en el de abajo (sin costuras).',RED,s)
-for i,(c,n) in enumerate([((16,19,17),'#101311'),((20,24,22),'#141816'),((27,31,29),'#1b1f1d')]):
-    y=180+i*70; d.rectangle([20,y,90,y+55],fill=c+(255,),outline=WHITE); label(d,(105,y+12),f'{n}  rango de valores objetivo',WHITE,s)
-label(d,(20,h-70),'Va detrás de TODO el contenido: bajo contraste, sin manchas grandes.',WHITE,s)
-im.save(OUT+'03-textura-fondo_1024x1024.png')
+# 3 muro celular (plantilla a la mitad: 430x6720 = render 860x13440)
+W,H=860,13440; w,h=int(W*K),int(H*K)
+im=Image.new('RGBA',(w,h),(0,0,0,0)); d=ImageDraw.Draw(im); s=12
+d.rectangle([0,0,w-1,h-1],outline=WHITE,width=2)
+d.text((6,6),'MURO CELULAR · 860x13440',font=font(14,True),fill=WHITE,stroke_width=2,stroke_fill=(0,0,0,255))
+d.text((6,24),'(guía a la mitad)',font=font(12),fill=WHITE,stroke_width=2,stroke_fill=(0,0,0,255))
+for i in range(1,7): y=i*1920*K; d.line([0,y,w,y],fill=WHITE,width=2); label(d,(w-90,y-18),f'corte {i} | {i+1}',WHITE,s)
+d.rectangle([0,0,w,105*K],fill=(80,220,255,40)); label(d,(6,44),'almenas',CYAN,s)
+d.rectangle([0,105*K,w,226*K],outline=YEL,width=2); label(d,(6,105*K+4),'franja libre: antorcha de arriba',YEL,s)
+d.rectangle([4,226*K,w-4,13100*K],fill=(255,70,70,28)); dash_rect(d,(4,226*K,w-4,13100*K),RED,2,10)
+label(d,(8,226*K+10),'DETRÁS DEL CONTENIDO',RED,s); label(d,(8,226*K+26),'(todo el ancho en celular)',RED,s)
+label(d,(8,h-40),'Mismo muro y misma luz que compu:',WHITE,s); label(d,(8,h-24),'es la franja central de 4,9 m.',WHITE,s)
+im.save(OUT+'03-muro-celular_860x13440.png')
 
-# 4 flame
-w,h=128,192; im,d,s=base(w,h,'LLAMA'); s=10
-bx,by=64,150
-d.rectangle([bx-40,by-10,bx+40,h-1],fill=(255,215,60,40)); label(d,(4,by+14),'hierro = holdout',YEL,s)
-d.ellipse([bx-5,by-5,bx+5,by+5],fill=RED); d.line([bx-14,by,bx+14,by],fill=RED,width=1); d.line([bx,by-14,bx,by+14],fill=RED,width=1)
-label(d,(bx+8,by-18),'nace acá',RED,s)
-dash_rect(d,(14,24,w-14,by),CYAN,1,5); label(d,(4,26),'la llama sube',CYAN,s); label(d,(4,38),'por acá',CYAN,s)
-im.save(OUT+'04-llama_128x192.png')
+# 4 antorcha (video de luz) 1024x1024
+w,h=1024,1024; im,d,s=base(w,h,'ANTORCHA: llama + su luz  img/antorchas/<id>.mp4'); s=22
+center(d,w,h)
+d.ellipse([w/2-10,h/2-10,w/2+10,h/2+10],fill=RED); label(d,(w/2+16,h/2-34),'boca de la antorcha (la esfera guía)',RED,s)
+r=w/2*0.55; d.ellipse([w/2-r,h/2-r,w/2+r,h/2+r],outline=YEL,width=3); label(d,(w/2-r+10,h/2+r-40),'luz fuerte adentro de este círculo',YEL,s)
+d.ellipse([4,4,w-4,h-4],outline=RED,width=3); label(d,(30,h-80),'Hacia el borde la web la funde a negro: la luz tiene que apagarse antes de llegar acá.',RED,s)
+label(d,(30,80),'Fondo NEGRO, sin luna. Solo la luz de ESTA antorcha.',WHITE,s)
+label(d,(30,112),'Se ve el muro y el hierro iluminados por el fuego, y el fuego.',WHITE,s)
+label(d,(30,144),'Loop de 48 frames (2 s) a 24 fps.',WHITE,s)
+im.save(OUT+'04-antorcha_1024x1024.png')
 
 # 5 grass
 w,h=2560,200; im,d,s=base(w,h,'PASTO + CALAVERAS  img/grass.png'); s=18

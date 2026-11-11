@@ -1,170 +1,218 @@
 # Guía: assets 3D para la web
 
-Esta carpeta tiene todo lo que necesitás para que lo que hagas en Blender encaje directo en https://tomascarballes.github.io. Si respetás nombre, tamaño, formato y posiciones, cada asset reemplaza solo a su placeholder.
+Esta carpeta tiene todo lo que necesitás para que lo que hagas en Blender encaje directo en https://tomascarballes.github.io. Si respetás nombres, tamaños, formatos y posiciones, cada asset reemplaza solo a su placeholder.
+
+> **Si arrancaste con una versión anterior de esta carpeta:** empezá de nuevo. Bajá la carpeta nueva, reemplazá todo y arrancá con un `.blend` nuevo. Cambió la forma de armar el muro y las antorchas, y el script nuevo no es compatible con la escena vieja. Si ya modelaste algo (piedras, materiales, la antorcha), traelo al `.blend` nuevo con **File → Append** y metelo en su colección.
 
 ## Qué hay en esta carpeta
 
 | Archivo | Para qué sirve |
 |---|---|
-| `01` a `08` `-*.png` | Plantillas guía, una por asset, al tamaño exacto. Marcan dónde va el texto, qué se recorta en celular, dónde tiene que haber transparencia y dónde va cada antorcha. **No salen en el render.** |
-| `setup_web_assets.py` | Script de Blender. Arma la escena MASTER con sus colecciones y una escena por asset con la cámara, la resolución, la transparencia, el formato, qué se ve y qué solo ilumina, y la plantilla de fondo. |
+| `01` a `08` `-*.png` | Plantillas guía, una por asset. Marcan dónde va el contenido, qué se ve en celular, dónde tiene que haber transparencia y dónde conviene poner las antorchas. **No salen en el render.** |
+| `setup_web_assets.py` | Script de Blender: arma la escena MASTER con sus colecciones y una escena por asset con cámara, resolución, formato, qué se ve y la plantilla de fondo. |
+| `cortar_muro.py` | Script de Blender: corta los dos renders del muro en las partes que usa la web. |
 | `GUIA.pdf` | Esta guía. |
 
-## La idea: una sola escena, muchos renders
+## La idea
 
-Se trabaja como en VFX: **todo vive en una sola escena con una sola iluminación**, y de ahí salen las piezas por separado. Así la luna ilumina todo igual, las antorchas iluminan el muro de verdad y todo parece del mismo mundo.
+### Una sola escena, una sola luz
 
-- **MASTER** es donde modelás, texturizás e iluminás todo.
-- **Las escenas WEB_\*** no tienen copias de nada. Muestran la misma colección de MASTER (si movés una piedra, cambia en todos los renders) y cada una suma solo su cámara, su resolución y qué colecciones entran en ese render.
+Se trabaja como en VFX: **todo vive en una escena con una sola iluminación** y de ahí salen las piezas por separado. La luna ilumina todo igual y todo parece del mismo mundo.
 
-Cada escena WEB usa cada colección de una de cuatro formas:
+- **MASTER** es donde modelás, texturizás e iluminás.
+- **Las escenas WEB_\*** no tienen copias: muestran la misma colección de MASTER. Si movés una piedra, cambia en todos los renders. Cada escena suma solo su cámara, su resolución y qué colecciones entran en ese render.
 
-| Modo | Qué hace | Ejemplo |
+### Un muro enorme, en partes
+
+El fondo de toda la página es **un solo muro gigante** (25,6 m de ancho por 76,8 m de alto), renderizado de una vez con su luz global. Después se corta en partes horizontales y la web las apila una debajo de la otra, en orden, así que se ve como una sola pared que vas scrolleando, con el contenido encima.
+
+Del mismo muro salen **dos renders**, con dos cámaras:
+
+| | Compu | Celular |
 |---|---|---|
-| Se ve | Sale normal en el render. | El muro en `WEB_muro`. |
-| Solo luz (*Indirect only*) | No se ve, pero ilumina, se refleja y tira sombras. | El fuego en `WEB_muro`: ilumina la piedra sin aparecer. |
-| Agujero (*Holdout*) | Tapa lo que está detrás y deja ese lugar transparente. | El hierro de la antorcha en las llamas: la llama queda "detrás" del soporte. |
-| Excluida | No existe para ese render. | El cementerio en `WEB_muro`. |
+| Qué agarra la cámara | el muro entero, 25,6 m de ancho | la franja central del mismo muro, 4,9 m de ancho |
+| Render | 2560 × 7680 px | 860 × 13440 px |
+| Partes | 6 de 2560 × 1280 | 7 de 860 × 1920 |
 
-Todo esto el script ya lo configura. Necesita **Cycles** (Eevee no tiene *Indirect only*), y lo deja puesto.
+En el celular la pantalla es angosta y la página mucho más larga, por eso se usa una franja del centro con más resolución: las piedras se ven más grandes y el muro alcanza para toda la página. No hay que modelar nada dos veces: es el mismo muro, con la misma luz, visto con otra cámara.
 
-## Cómo arrancar
+### Antorchas con luz real que titila
 
-1. Copiá esta carpeta a tu compu.
-2. En Blender (versión 4 o más nueva), con un archivo nuevo: **Scripting → Open**, elegí `setup_web_assets.py` **desde esta carpeta** → **Run Script**.
-3. **Guardá el `.blend` dentro de esta carpeta.** Los renders van a salir en `render_web/`, al lado del `.blend`.
-4. Vas a estar en la escena **MASTER**, con las colecciones de la tabla de abajo.
+La luz se suma, y eso permite separarla en capas y sumarlas después sin perder realismo:
+
+1. **El muro** se renderiza **solo con la luz de la luna**, quieto. Las antorchas de hierro salen en el muro, pero apagadas.
+2. **Cada antorcha** tiene su propio **video animado**: un recuadro de 10,24 × 10,24 m alrededor de ella, con **solo su fuego encendido**, sin luna y con fondo negro. En ese video salen la llama, el hierro iluminado y la luz cálida titilando sobre los ladrillos, con sus sombras moviéndose.
+3. **La web suma cada video encima del muro**, en modo *plus-lighter*, que es el "add" del compositor: lo negro no cambia nada y lo iluminado se suma a la piedra. El borde del recuadro se funde suave para que no se note el corte.
+
+El resultado es igual a haber renderizado todo junto, pero con la luz de las antorchas animada.
+
+**En celular** el contenido ocupa casi todo el ancho de la pantalla, así que solo se ve la antorcha que esté **arriba de todo**, en la franja libre bajo las almenas. Las laterales se ven solo en compu.
+
+## Cómo arrancar (desde cero)
+
+1. Bajá y descomprimí esta carpeta en tu compu.
+2. Abrí Blender 4 o más nuevo, con un archivo nuevo, y **guardalo dentro de esta carpeta** (por ejemplo `web.blend`).
+3. **Scripting → Open** → `setup_web_assets.py` (abrilo desde esta carpeta) → **Run Script**.
+4. Quedás en la escena **MASTER**. Borrá el cubo, la luz y la cámara que vienen por defecto: están fuera de la colección MASTER y no se usan.
+5. Modelá todo **adentro de la colección que corresponde**. Antes de agregar un objeto, hacé clic en la colección en el Outliner para que quede activa. Para mover algo ya creado: seleccionalo, **M** y elegí la colección.
 
 **Colecciones de MASTER:**
 
 | Colección | Qué va adentro |
 |---|---|
-| `Luz_luna` | La luna (luz principal fría), el cielo y la luz de ambiente. |
-| `Luz_neutra` | Una luz pareja y suave, **solo** para la textura de fondo. |
+| `Luz_luna` | La luna (luz principal fría), el cielo y el ambiente. |
 | `Cementerio` | El fondo de la intro: lápidas, árboles, rejas, suelo lejano. |
-| `Muro` | El muro con almenas. |
-| `Antorchas_hierro` | Los soportes de hierro, sin el fuego. |
-| `Llamas` | El fuego: objetos emisivos o simulación. Es lo que ilumina el muro. |
+| `Muro` | El muro gigante con almenas. |
+| `Antorchas_hierro` | Los soportes de hierro de todas las antorchas, sin fuego. |
+| `Fuego_<nombre>` | Una por antorcha (`Fuego_arriba`, `Fuego_izq_1`…): **su** llama y **su** luz. |
 | `Pasto` | El pasto y las calaveras. |
-| `Textura_piedra` | Un plano con el material de piedra, para la textura repetible. |
 | `Marco` | El marco dorado. |
 | `Niebla` | El volumen de niebla. |
-| `GUIAS (no se renderiza)` | Una caja del tamaño del muro y dos esferitas donde nace cada llama. |
+| `GUIAS (no se renderiza)` | El tamaño del muro, la franja del celular y una esfera donde va la boca de cada antorcha. |
 
-**5.** Para renderizar, elegí una escena **WEB_\*** arriba a la derecha, mirá por la cámara (**Numpad 0**) para ver la plantilla encima, y **F12** (o **Ctrl+F12** para las animaciones).
+**Para trabajar un asset en particular**, por ejemplo el banner, cambiá a su escena (`WEB_banner`) arriba a la derecha y mirá por la cámara (**Numpad 0**): aparece la plantilla encima. Podés modelar desde ahí, porque las colecciones son compartidas. Si una cámara está en perspectiva, encuadrás tu vista y **Ctrl+Alt+Numpad 0** mueve la cámara a donde estás mirando.
 
-Si la plantilla no aparece: revisá que estés en una escena WEB_\* y no en MASTER, que el botón **Overlays** del visor esté prendido y, si el script tiró un error de que no encuentra las plantillas, pegá la ruta de esta carpeta en `TEMPLATES_DIR`, arriba de todo en el script.
+**Para renderizar**, en su escena: **F12** para imágenes o **Ctrl+F12** para animaciones (antorchas y niebla). Todo sale en `render_web/`, al lado del `.blend`.
 
-## Medidas y posiciones fijas
+**Si la plantilla no aparece**, revisá que estés en una escena WEB_\* y no en MASTER, y que el botón **Overlays** del visor (los dos circulitos) esté prendido. Si el script dice que no encuentra las plantillas, pegá la ruta de esta carpeta en `TEMPLATES_DIR`, arriba de todo en el script.
 
-La web y Blender usan la misma escala: **100 px de la web = 1 m en Blender.**
+**Necesita Cycles.** El script ya lo deja puesto en todas las escenas.
 
-- **El muro mide 25,6 × 3 m.** Va centrado en X = 0, con la base en Z = 0, mirando a −Y (la cámara está en Y = −20). La caja `GUIA_muro` marca el tamaño exacto.
-- **Antorchas:** la boca de cada una (el punto donde nace la llama) tiene que caer **exacto** en las esferas `GUIA_llama_izq` y `GUIA_llama_der`, que en la imagen son los px (420, 135) y (2140, 135). La web pone la llama animada justo ahí. Si movés una antorcha, avisame y cambio las coordenadas en la web y en el script.
-- Los demás assets tienen su lugar en la escena para que no se mezclen con el muro: el pasto con base en Z = −10, el marco centrado en X = 30 y Z = 3,7, y el plano de la textura delante de la cámara en Z = −50. Podés mover sus cámaras si te queda más cómodo.
+## Medidas
+
+- **Escala:** 100 px del render de compu = 1 m.
+- **Muro:** X de −12,8 a 12,8 m, Z de 0 (abajo) a 76,8 m (arriba de las almenas), la cara en Y = 0 mirando a −Y. Las almenas ocupan los 60 cm de arriba.
+- **Antorchas:** la boca de cada una va justo en su esfera `GUIA_antorcha_<nombre>`.
+- **Pasto:** base en Z = −10, debajo del muro, para que no se mezcle.
+- **Marco:** 60 × 74 cm, centrado en X = 40.
+
+### Dónde poner las antorchas
+
+Las posiciones están en la lista `TORCHES`, arriba de todo en `setup_web_assets.py`: cada una tiene nombre, X y Z en metros. Para agregar, sacar o mover una antorcha, **editás la lista y volvés a correr el script**. Eso crea o actualiza su esfera guía, su colección `Fuego_…`, su escena y el archivo `antorchas.json`, que es el que le dice a la web dónde va cada una.
+
+- **Laterales (compu):** X entre ±8,6 y ±10,6 m. Más adentro quedan tapadas por el contenido y más afuera se cortan en pantallas chicas. Las zonas amarillas de la plantilla del muro de compu las marcan.
+- **Arriba (compu y celular):** en la franja libre debajo de las almenas, cerca de X = 0 y Z = 75,6. Es la única que se ve en celular.
+- **En altura** las podés distribuir como quieras a lo largo del muro. En pantallas grandes la página termina cerca de Z = 11 m y en las más chicas usa el muro hasta abajo: si querés que una antorcha se vea siempre, ponela arriba de Z = 12 m.
+- **La lista que trae el script es un ejemplo:** una arriba y cuatro laterales. Cada antorcha es un video, así que con 4 a 7 en total la web sigue liviana.
 
 ## Reglas para todos
 
-- **Lo primero es que se lea el texto y se vean tus trabajos.** Valores bajos, poco contraste y nada de detalle fuerte detrás del texto.
+- **Lo primero es que se lea el texto y se vean tus trabajos.** Valores bajos, poco contraste y nada de detalle fuerte detrás del contenido.
 - **Paleta:** fondo #0a0d0b · musgo #6f8a68 · violeta #9a80c4 / #5d4785 · azul frío suave · hueso #e3e1d8. Lo único cálido es el fuego (ámbar #e8a24a).
-- **Luz:** la luna fría y difusa ilumina todo. Las antorchas suman un rebote cálido solo cerca de ellas.
-- **Mundo (World) oscuro:** lo comparten todas las escenas. Si lo hacés claro, la niebla deja de verse sobre negro.
-- **Color:** view transform AgX (o Filmic), look None, salida sRGB. El script ya lo configura.
-- **Peso:** antes de subir, pasá cada imagen por https://squoosh.app o https://tinypng.com, cuidando no romper la transparencia de los PNG.
+- **World oscuro:** lo usan todas las escenas menos las de antorcha, que usan uno negro (`WEB_negro`) que crea el script.
+- **Color:** view transform AgX (o Filmic), look None, salida sRGB, igual en todas. El script ya lo configura. Si cambiás la exposición del muro, cambiala también en las antorchas, porque se suman.
+- **Peso:** el script ya exporta en formatos livianos. Si algo pesa más de lo indicado, pasalo por https://squoosh.app.
 
 ## Cada asset
 
 ### 1. Banner de la intro → `img/banner.jpg`
 - Escena `WEB_banner` · 2560×1440 JPG · menos de 500 KB · cámara en perspectiva, la ubicás vos.
-- Entran luna, cementerio y niebla; las llamas solo como luz, si aparecen a lo lejos.
+- Entran luna, cementerio y niebla. El fuego entra solo como luz, por si alguna antorcha ilumina a lo lejos.
 - Ocupa toda la pantalla de entrada, al 40% de opacidad y con la niebla animada encima.
 - **Zona roja** (centro): ahí van tu nombre y los botones. Tiene que quedar oscura y limpia.
 - **Franja celeste:** es lo único que se ve en un celular vertical. Lo importante va adentro.
-- La web oscurece la parte de abajo hacia negro, así que no pongas nada clave ahí.
+- La web oscurece la parte de abajo hacia negro: no pongas nada clave ahí.
 
-### 2. Muro con almenas y antorchas → `img/wall.png`
-- Escena `WEB_muro` · 2560×300 PNG **con transparencia** · menos de 600 KB · cámara ortográfica frontal.
-- Entran el muro, el hierro de las antorchas y la luna. **El fuego entra como "solo luz":** la piedra queda iluminada por las antorchas, pero sin la llama dibujada (esa la pone la web, animada).
-- Es el muro que sube y tapa la intro al scrollear. Se estira al ancho de la pantalla con 140 a 220 px de alto.
-- **Arriba de la línea celeste** van las almenas, con el espacio entre ellas transparente.
-- **Recuadro violeta:** en celular solo se ve el centro, así que las antorchas quedan afuera. Está bien.
-- **Punto rojo:** la boca de cada antorcha. Recuadro amarillo: el lugar aproximado del soporte. Recuadro rojo punteado: el área que ocupa la imagen de la llama.
-- Abajo tiene que fundirse con piedra oscura (#101311).
-- Ideal, aunque no obligatorio: que el muro se pueda repetir en horizontal sin que se note.
+### 2. Muro para compu → `img/muro/compu_1.webp` … `compu_6.webp`
+- Escena `WEB_muro_compu` · render de 2560×7680 PNG con transparencia arriba · cámara ortográfica de frente (ya puesta).
+- Entran el muro, el hierro de las antorchas y la luna. **El fuego no entra**: su luz va en los videos de antorcha.
+- **Almenas:** los 60 cm de arriba, con el espacio entre ellas transparente. Es el borde que sube y tapa la intro al scrollear.
+- **Franja amarilla de arriba:** es pared que se ve antes del contenido. Es el lugar de la antorcha de arriba.
+- **Zona roja central:** queda detrás del contenido. Piedra oscura, pareja y sin antorchas.
+- **Zonas amarillas a los costados:** ahí van las antorchas laterales.
+- **Líneas blancas:** los cortes entre partes. No pasa nada si una piedra queda cortada, porque la web las une sin costura.
+- **Línea verde:** en pantallas grandes la página termina ahí; en las más chicas se usa el muro hasta abajo. Así que el muro tiene que verse bien de punta a punta.
+- **Render pesado:** 20 megapíxeles. Usá el denoiser y las muestras que necesites. Es una sola imagen quieta, se hace una vez.
 
-### 3. Llamas animadas → `img/flame-left.webp` y `img/flame-right.webp`
-- Escenas `WEB_llama_izq` y `WEB_llama_der` · 128×192 cada una · 48 frames a 24 fps (2 s) · con transparencia.
-- Entran las llamas y la luna. **El hierro y el muro van como agujero (Holdout):** el soporte tapa la base del fuego igual que en el muro, y todo lo que no es fuego queda transparente.
-- Cada cámara es ortográfica, con la misma escala de pixel que el muro y encuadrada sobre su antorcha. Por eso la llama coincide pixel por pixel con el muro, sin que tengas que alinear nada.
-- **Punto rojo de la plantilla:** donde nace la llama (px 64, 150). La llama sube hacia el recuadro celeste. En tamaño real, una llama de 50 a 90 px de alto queda bien.
-- **Que sean distintas:** cambiá el *seed* o desfasá el ruido en una de las dos. Si son iguales y van sincronizadas, se nota que es la misma.
-- **Loop perfecto:** el frame 48 tiene que empalmar con el 1. Si animás el fuego con ruido 4D, mové la coordenada W en círculo (seno y coseno del frame) o hacé un crossfade entre el final y el principio.
-- **Brillo sobre el muro:** la luz fija de la antorcha ya sale en `wall.png`. Encima, la web suma un resplandor ámbar muy suave que titila, para que la pared "respire" con el fuego. Si no te gusta, se saca.
-- **Cómo exportar:** **Ctrl+F12** renderiza la secuencia PNG en `render_web/llama_izq/` (y `llama_der/`). Para pasarla al formato de la web, mandame las dos carpetas y las convierto yo, o corré:
-  - `ffmpeg -framerate 24 -i llama_izq_%04d.png -c:v libwebp_anim -loop 0 -lossless 0 -q:v 80 -pix_fmt yuva420p flame-left.webp`
-  - `ffmpeg -framerate 24 -i llama_der_%04d.png -c:v libwebp_anim -loop 0 -lossless 0 -q:v 80 -pix_fmt yuva420p flame-right.webp`
-- Las dos juntas tienen que pesar menos de 600 KB. WebP animado con transparencia funciona en todos los navegadores actuales, incluido Safari en iPhone.
+### 3. Muro para celular → `img/muro/celu_1.webp` … `celu_7.webp`
+- Escena `WEB_muro_celular` · render de 860×13440 PNG con transparencia arriba. (Arriba se ve solo el comienzo de su plantilla; la plantilla completa está en la carpeta.)
+- **Mismo muro y misma luz que el de compu.** La cámara agarra la franja central de 4,9 m (la caja `GUIA_franja_celular`). No hay que tocar nada en la escena: solo renderizar.
+- En celular el contenido ocupa todo el ancho, así que la zona roja es casi toda la imagen. Lo único que queda a la vista sin contenido encima es la franja de arriba.
 
-### 4. Textura de piedra de fondo → `img/wall-tile.jpg`
-- Escena `WEB_textura_fondo` · 1024×1024 JPG · **tileable sin costuras** · menos de 300 KB.
-- **Es la excepción a la luz compartida:** entran solo `Textura_piedra` y `Luz_neutra`. Si la iluminaran la luna o las antorchas, al repetirse se verían las manchas de luz una y otra vez.
-- Usá el mismo material de piedra del muro, en un plano que llene justo la cámara. Otra opción es bakear el color del material a 1024×1024.
-- Es el fondo de toda la página, detrás de los bloques negros con el contenido.
-- Muy oscura: valores entre #101311 y #1b1f1d (las muestras están en la plantilla). Sin piedras ni manchas que llamen la atención.
-- Para probar que no tenga costuras, ponela en un plano con las UV escaladas 3×3 y mirá si se nota la repetición.
+### Cortar el muro en partes
+1. Renderizá `WEB_muro_compu` y `WEB_muro_celular` (**F12** en cada una). Quedan `render_web/muro_compu.png` y `render_web/muro_celular.png`.
+2. **Scripting → Open** → `cortar_muro.py` → **Run Script**.
+3. Te deja las partes en `render_web/muro/`: `compu_1.webp` a `compu_6.webp` y `celu_1.webp` a `celu_7.webp`.
+4. Si el script falla, mandame los dos PNG y los corto yo.
+
+### 4. Antorchas (llama + su luz) → `img/antorchas/<nombre>.mp4` + `img/antorchas.json`
+- Una escena por antorcha: `WEB_antorcha_arriba`, `WEB_antorcha_izq_1`, etc. · 1024×1024 · 48 frames a 24 fps (2 s) · video MP4 directo desde Blender.
+- Entran **el muro, el hierro y el fuego de ESA antorcha**, sin luna y con el mundo negro. Por eso cada antorcha necesita su propia colección `Fuego_<nombre>`: así en su video no se cuela la luz de las otras.
+- La cámara es ortográfica, centrada en la boca de la antorcha y con la misma escala que el muro de compu, así que el video coincide exacto con la pared, sin alinear nada.
+
+**Cómo armar cada antorcha**
+
+1. **El hierro** va en `Antorchas_hierro`, con la boca justo en su esfera guía.
+2. **La llama** va en `Fuego_<nombre>`. Puede ser una simulación de fuego (Mantaflow) o algo más simple y liviano: una forma con shader de **Emission**, animada con ruido.
+3. **La luz** va en la misma colección `Fuego_<nombre>`: una **Point Light** ámbar dentro de la llama. Con su potencia y su radio decidís cuánta pared ilumina. Una llama emisiva ilumina sola, pero la Point Light es mucho más fácil de controlar.
+4. **Que titile:** animá la potencia de la luz con un modificador **Noise** en el Graph Editor, y movela un poco (unos centímetros) también con Noise, para que las sombras se muevan. El fuego del shader, animado con ruido.
+5. **Loop perfecto:** el frame 48 tiene que empalmar con el 1. Con los modificadores Noise, usá **Cyclic** o dejá que el inicio y el final coincidan. Para el ruido del shader, usá **4D noise** y mové la coordenada W en círculo con el frame: `sin` y `cos` de `frame / 48 · 2π`.
+6. **Que se apague antes del borde:** la web funde el borde del video a negro desde un poco más de la mitad del recuadro hacia afuera (el círculo amarillo de la plantilla). La luz fuerte tiene que quedar adentro de ese círculo y llegar casi a negro en el borde.
+7. **Que cada antorcha sea distinta:** cambiá el *seed* o el desfase del ruido en cada una. Si todas titilan igual, se nota.
+
+**Exportar:** **Ctrl+F12** en cada escena de antorcha. Sale directo `render_web/antorchas/<nombre>.mp4`. Además, el script genera `render_web/antorchas.json` con las posiciones de todas (se crea cuando el `.blend` ya está guardado; si no está, volvé a correr el script). Ese archivo va junto con los videos.
 
 ### 5. Pasto con calaveras → `img/grass.png`
 - Escena `WEB_pasto` · 2560×200 PNG **con transparencia** · repetible en horizontal.
-- Entran el pasto y la luna; el fuego solo como luz, por si querés un rebote cálido.
-- Es el suelo al final de la página.
+- Entran el pasto y la luna. Es el suelo al final de la página, por delante del muro.
 - Abajo una base sólida que toque el borde. Arriba, las puntas del pasto sobre fondo transparente.
 - Entre 2 y 4 calaveras chicas semienterradas. En celular la imagen se ve de unos 30 px de alto, así que necesitan una silueta clara.
 
 ### 6. Marco dorado → `img/frame.png`
-- Escena `WEB_marco` · 600×740 PNG **con transparencia**.
-- Entran el marco y la luna; el fuego solo como luz, para que el dorado tenga brillo cálido.
+- Escena `WEB_marco` · 600×740 PNG **con transparencia** · 60 × 74 cm.
+- Entran el marco y la luna.
 - Marco ovalado barroco, dorado a la hoja, con remate tallado arriba.
 - **El hueco va hasta la línea amarilla y tiene que ser transparente**, porque tu foto va debajo (el óvalo rojo). El marco tapa unos 10 px del borde de la foto.
 - El clavo y el cordón ya los dibuja la web. Si los querés hacer en 3D, avisame y saco los de código.
 
 ### 7. Imagen para compartir el link → `img/og.jpg`
 - Escena `WEB_compartir` · 1200×630 JPG · cámara en perspectiva.
-- Es la vista previa que aparece cuando mandás el link por WhatsApp, Instagram o LinkedIn. Entra todo: cementerio, muro, antorchas, fuego y niebla.
-- Poné "Tomas Carballes · 3D Generalist" en la zona roja (lo podés sumar en el compositor o en Photoshop).
-- Algunas apps la recortan a cuadrado (línea celeste), así que el texto tiene que quedar adentro.
+- Es la vista previa que aparece cuando mandás el link por WhatsApp, Instagram o LinkedIn. Entra todo, con el fuego encendido.
+- Poné "Tomas Carballes · 3D Generalist" en la zona roja (en el compositor o en Photoshop).
+- Algunas apps la recortan a cuadrado (línea celeste): el texto tiene que quedar adentro.
 
-### 8. Niebla en loop → `img/fog.webm` y `img/fog.mp4`
-- Escena `WEB_niebla` · 1920×1080 · 240 frames a 24 fps (10 s) · sin audio · menos de 3 MB.
+### 8. Niebla en loop → `img/fog.mp4`
+- Escena `WEB_niebla` · 1920×1080 · 240 frames a 24 fps (10 s) · video MP4 directo desde Blender · menos de 3 MB.
 - Entran solo la niebla y la luna, sobre el World oscuro. **Tiene que quedar fondo negro puro:** la web la mezcla en modo "screen", así que el negro desaparece y queda solo la niebla.
 - Más densa abajo, más rala detrás del texto. Tonos verde, violeta y azul muy sutiles.
-- **Ctrl+F12** renderiza la secuencia en `render_web/niebla/`. Para pasarla a video, mandámela y la convierto, o corré:
-  - `ffmpeg -framerate 24 -i niebla_%04d.png -c:v libvpx-vp9 -b:v 0 -crf 40 -pix_fmt yuv420p -an fog.webm`
-  - `ffmpeg -framerate 24 -i niebla_%04d.png -c:v libx264 -crf 26 -preset veryfast -pix_fmt yuv420p -movflags +faststart -an fog.mp4`
+- **Ctrl+F12** → sale `render_web/fog.mp4`.
 
 ## Orden recomendado
 
-1. Luna, World y material de piedra en MASTER.
-2. El muro y las antorchas de hierro, ubicadas en las esferas guía.
-3. El fuego en `Llamas` → renderizás `WEB_muro` y revisás que la luz sobre la piedra quede bien.
-4. Las dos llamas animadas.
-5. La textura de fondo, con el mismo material.
-6. El pasto y el marco.
-7. El cementerio, la niebla, el banner y la imagen para compartir.
+1. Luna, World y material de piedra, en MASTER.
+2. El muro gigante y las almenas.
+3. El hierro de las antorchas en sus esferas guía (y la lista `TORCHES` ajustada a tu gusto).
+4. Render de prueba de `WEB_muro_compu` a resolución baja (Output → % al 25%) para ver la luz de luna.
+5. Una antorcha completa con su llama y su luz animadas → video → probala sobre el muro.
+6. Las demás antorchas.
+7. Renders finales del muro (compu y celular) → `cortar_muro.py`.
+8. El pasto y el marco.
+9. El cementerio, la niebla, el banner y la imagen para compartir.
 
-## Cómo subirlo
+## Qué subir a la web
 
-- **Opción fácil:** pasame los archivos (o las carpetas de frames) en el chat y los subo yo.
-- **Opción directa:** en GitHub, entrá al repo → carpeta `img` → **Add file → Upload files** → arrastrá los archivos con el nombre exacto → **Commit changes**. En uno o dos minutos ya se ven en la web.
+Dentro de la carpeta `img/` del repo:
 
-Apenas subís `wall.png`, la web esconde las antorchas de código. Las llamas aparecen cuando subís `flame-left.webp` y `flame-right.webp`.
+| Archivo | De dónde sale |
+|---|---|
+| `muro/compu_1.webp` … `compu_6.webp` | `render_web/muro/` (después de `cortar_muro.py`) |
+| `muro/celu_1.webp` … `celu_7.webp` | `render_web/muro/` |
+| `antorchas/<nombre>.mp4` | `render_web/antorchas/` |
+| `antorchas.json` | `render_web/antorchas.json` |
+| `banner.jpg`, `grass.png`, `frame.png`, `og.jpg`, `fog.mp4` | `render_web/` |
+
+- **Opción fácil:** pasame la carpeta `render_web` comprimida en el chat y subo todo yo.
+- **Opción directa:** en GitHub, entrá al repo → carpeta `img` → **Add file → Upload files** → arrastrá respetando las carpetas → **Commit changes**. En uno o dos minutos se ve en la web.
+
+Mientras no estén las partes del muro, la web muestra el muro de código que tiene ahora. Apenas subís `compu_1.webp` (o `celu_1.webp`), cambia al tuyo.
 
 ## Checklist antes de dar un asset por terminado
 
 - [ ] Nombre, tamaño y formato exactos.
 - [ ] Transparencia donde se pide (abrilo sobre un fondo de color para chequear).
-- [ ] Antorchas en sus esferas guía y llamas que nacen en el punto rojo.
-- [ ] Loops que empalman sin salto (llamas y niebla).
-- [ ] Nada importante fuera de las zonas de celular.
-- [ ] Zona del texto oscura y limpia.
-- [ ] Comprimido y dentro del peso indicado.
+- [ ] Antorchas en sus esferas guía y `antorchas.json` generado después del último cambio a la lista.
+- [ ] La luz de cada antorcha se apaga antes del borde de su video.
+- [ ] Loops que empalman sin salto (antorchas y niebla).
+- [ ] Nada importante fuera de las zonas que se ven en celular.
+- [ ] Zona del contenido oscura y pareja.
 - [ ] Probado en la web en compu y en celular.
