@@ -9,7 +9,31 @@
 
 import bpy, os, math
 
-HERE = bpy.path.abspath("//") or os.path.dirname(os.path.abspath(__file__))
+# Si la plantilla no aparece, pegá acá la ruta de la carpeta plantillas-3d, por ejemplo:
+# TEMPLATES_DIR = r"C:\Users\Tomas\Documents\plantillas-3d"
+TEMPLATES_DIR = r""
+
+def find_templates_dir():
+    candidates = []
+    if TEMPLATES_DIR:
+        candidates.append(TEMPLATES_DIR)
+    # carpeta del script abierto en el Text Editor
+    for t in bpy.data.texts:
+        if t.filepath and t.name.startswith("setup_web_assets"):
+            candidates.append(os.path.dirname(bpy.path.abspath(t.filepath)))
+    # carpeta del .blend (si ya está guardado)
+    if bpy.data.filepath:
+        candidates.append(os.path.dirname(bpy.data.filepath))
+        candidates.append(os.path.join(os.path.dirname(bpy.data.filepath), "plantillas-3d"))
+    for c in candidates:
+        if os.path.exists(os.path.join(c, "01-banner_2560x1440.png")):
+            return c
+    return None
+
+HERE = find_templates_dir()
+if not HERE:
+    raise RuntimeError("No encuentro las plantillas. Abrí el script desde la carpeta plantillas-3d "
+                       "(Scripting > Open) o escribí la ruta en TEMPLATES_DIR, arriba de todo.")
 
 ASSETS = [
     # nombre escena,        ancho, alto, plantilla,                          transparente, formato, salida,              cámara
@@ -80,5 +104,15 @@ for name, w, h, tpl, transparent, fmt, out, cam_type in ASSETS:
         bg.frame_method = "FIT"
     else:
         print("No encontré la plantilla:", path)
+    # el visor necesita los overlays prendidos para mostrar la plantilla
 
-print("Listo: escenas WEB_* creadas. Elegí una en el selector de escenas y mirá por la cámara (Numpad 0).")
+# pasar a la primera escena y prender overlays en los visores 3D
+bpy.context.window.scene = bpy.data.scenes["WEB_banner"]
+for area in bpy.context.window.screen.areas:
+    if area.type == "VIEW_3D":
+        for sp in area.spaces:
+            if sp.type == "VIEW_3D":
+                sp.overlay.show_overlays = True
+
+print("Listo. Plantillas desde:", HERE)
+print("Elegí una escena WEB_* arriba a la derecha y mirá por la cámara (Numpad 0).")
