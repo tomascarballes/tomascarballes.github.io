@@ -12,9 +12,9 @@ Conseguir trabajo como **3D Generalist** (juegos, cine, publicidad). La web es l
 
 ## Estructura
 - `index.html` — toda la web (HTML + CSS + JS en un archivo).
-- `img/` — imágenes propias. `about.jpg` (foto). Placeholders que se activan solos si existen: `banner.jpg`, `wall.png`, `wall-tile.jpg`, `sconce.png`, `grass.png`, `frame.png`, `fog.webm`/`fog.mp4`, `og.jpg`, y portadas `fridge.jpg`, `potions.jpg`, `astros.jpg`, `bloodseer.jpg`, `bathroom.jpg` (respaldo si no cargan las de ArtStation).
+- `img/` — imágenes propias. `about.jpg` (foto). Placeholders que se activan solos si existen: `banner.jpg`, `wall.png` (con antorchas horneadas; esconde las de código), `flame-left.webp`/`flame-right.webp` (llamas animadas, ubicadas por JS en px 420,135 y 2140,135 del muro), `wall-tile.jpg`, `grass.png`, `frame.png`, `fog.webm`/`fog.mp4`, `og.jpg`, y portadas `fridge.jpg`, `potions.jpg`, `astros.jpg`, `bloodseer.jpg`, `bathroom.jpg` (respaldo si no cargan las de ArtStation).
 - `cv/` — PDFs del CV (pendiente).
-- `plantillas-3d/` — plantillas guía PNG, script de Blender (`setup_web_assets.py`) y `GUIA.pdf` con specs de cada asset 3D (fuente: `tools/guia-3d.md`, se regenera con `python3 tools/build_guia.py`).
+- `plantillas-3d/` — plantillas guía PNG, script de Blender (`setup_web_assets.py`, escena MASTER + escenas vinculadas) y `GUIA.pdf` con specs de cada asset 3D (fuente: `tools/guia-3d.md`, se regenera con `python3 tools/build_guia.py`).
 - `drafts/` — versiones anteriores del diseño (minimalista, gótica bordó, cementerio v11).
 
 ## CV
@@ -23,6 +23,11 @@ Conseguir trabajo como **3D Generalist** (juegos, cine, publicidad). La web es l
   - Completo (con teléfono, para postulaciones): `python3 tools/build_cv.py --phone "..." --area "Villa Ortuzar, Argentina" --out <carpeta fuera del repo>`.
 - El teléfono NUNCA se guarda en el repo (es público). El script se niega a escribir la versión completa adentro del repo.
 - Diseño: el mismo del CV original (blanco, azul, dos columnas), sin estética gótica, para lectura automática e impresión.
+
+## Assets 3D
+- Una sola escena MASTER con una sola iluminación; escenas WEB_* vinculadas (misma colección) con su cámara/resolución y modos por colección (se ve / solo luz / holdout / excluida). Cycles.
+- Escala 100 px = 1 m. Muro 25,6×3 m. Antorchas horneadas en wall.png; la llama sale aparte como WebP animado 128×192 (base en px 64,150) renderizado con cámara ortográfica de igual escala. Textura de fondo con luz neutra aparte.
+- Generadores: `tools/build_plantillas.py` (PNGs), `tools/build_guia.py` (PDF desde `tools/guia-3d.md`).
 
 ## Decisiones
 - Título: nombre grande + "3D Generalist". Subtítulo: Modeling · Lookdev · Lighting · Rendering.

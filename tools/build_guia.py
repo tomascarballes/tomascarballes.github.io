@@ -4,7 +4,7 @@ import markdown, base64, io, pathlib
 from PIL import Image
 from playwright.sync_api import sync_playwright
 ROOT=pathlib.Path(__file__).resolve().parent.parent; T=ROOT/'plantillas-3d'
-MAPS={'### 1.':'01-banner_2560x1440.png','### 2.':'02-muro_2560x300.png','### 3.':'03-textura-fondo_1024x1024.png','### 4.':'04-antorcha_200x320.png',
+MAPS={'### 1.':'01-banner_2560x1440.png','### 2.':'02-muro_2560x300.png','### 3.':'04-llama_128x192.png','### 4.':'03-textura-fondo_1024x1024.png',
       '### 5.':'05-pasto_2560x200.png','### 6.':'06-marco_600x740.png','### 7.':'07-compartir_1200x630.png','### 8.':'08-niebla_1920x1080.png'}
 def thumb(f):
     im=Image.open(T/f); bg=Image.new('RGBA',im.size,(36,40,38,255)); bg.alpha_composite(im); bg=bg.convert('RGB')
